@@ -1,0 +1,3 @@
+google-genai==1.75.0
+watchdog==5.1.0
+python-dotenv==1.0.1
