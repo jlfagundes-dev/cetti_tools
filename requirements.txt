@@ -1,3 +1,5 @@
-google-genai==1.75.0
-watchdog==5.1.0
-python-dotenv==1.0.1
+google-genai>=1.70.0
+watchdog>=6.0.0
+python-dotenv>=1.0.0
+streamlit>=1.37.0
+openai>=1.0.0

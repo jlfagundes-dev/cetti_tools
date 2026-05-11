@@ -16,7 +16,7 @@ try:
 except PackageNotFoundError:
     SDK_VERSION = "desconhecida"
 
-print(f"🚀 Iniciando Cetti Organizador... (Versão SDK: {SDK_VERSION})")
+print(f"🚀 Iniciando Arquivista Digital Inteligente da Cetti... (Versão SDK: {SDK_VERSION})")
 
 def carregar_api_key():
     load_dotenv(override=True)
