@@ -12,11 +12,13 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers.polling import PollingObserver
 
 from cetti_core import garantir_estrutura, obter_raiz
+from cetti_logging import log_monitor
 
 
 load_dotenv(override=True)
 
 EXTENSAO_PERMITIDA = ".pdf"
+EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")
 CLIENTE_DESCONHECIDO = "CLIENTE_NAO_IDENTIFICADO"
 TIPO_DESCONHECIDO = "OUTROS"
 
@@ -189,24 +191,125 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
             time.sleep(5)
 
 
-def processar_arquivo(caminho: Path, pastas: dict[str, Path]) -> None:
+def chave_nome_documento(caminho: Path) -> str:
+    """Normaliza nomes como Documento.pdf e Documento.pdf.p7s para a mesma chave."""
+    nome = caminho.name
+    for extensao in EXTENSOES_ASSINATURA:
+        if nome.casefold().endswith(extensao):
+            nome = nome[: -len(extensao)]
+            break
+    if nome.casefold().endswith(EXTENSAO_PERMITIDA):
+        nome = nome[: -len(EXTENSAO_PERMITIDA)]
+    return re.sub(r"[^a-z0-9]", "", sem_acentos(nome).casefold())
+
+
+def encontrar_assinatura(caminho_pdf: Path) -> Path | None:
+    """Localiza assinatura mesmo quando ela inclui '.pdf' antes de '.p7s'."""
+    nome_base = chave_nome_documento(caminho_pdf)
+    for candidato in caminho_pdf.parent.iterdir():
+        if not candidato.is_file() or candidato.suffix.lower() not in EXTENSOES_ASSINATURA:
+            continue
+        if chave_nome_documento(candidato) == nome_base:
+            return candidato
+    return None
+
+
+def encontrar_pdf_da_assinatura(caminho_assinatura: Path, raiz: Path) -> Path | None:
+    nome_base = chave_nome_documento(caminho_assinatura)
+    candidatos = []
+    for candidato in raiz.rglob("*"):
+        if candidato.is_file() and candidato.suffix.lower() == EXTENSAO_PERMITIDA:
+            if chave_nome_documento(candidato) == nome_base:
+                candidatos.append(candidato)
+    candidatos.sort(key=lambda candidato: (0 if candidato.parent == caminho_assinatura.parent else 1, str(candidato).lower()))
+    if candidatos:
+        return candidatos[0]
+    return None
+
+
+def notificar_cliente(mensagem: str) -> None:
+    log.warning(mensagem)
+    log_monitor(f"AVISO AO CLIENTE: {mensagem}")
+
+
+def pasta_cliente_do_pdf(pdf: Path, pastas: dict[str, Path]) -> Path | None:
+    for grupo in (pastas["protocolado"], pastas["nao_protocolado"]):
+        if grupo in pdf.parents:
+            relativo = pdf.relative_to(grupo)
+            if len(relativo.parts) >= 3:
+                return grupo / relativo.parts[0]
+    return None
+
+
+def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) -> None:
+    pasta_cliente = pasta_cliente_do_pdf(pdf, pastas)
+    if pasta_cliente is None:
+        log.warning("PDF correspondente encontrado, mas a pasta do cliente nao foi identificada: %s", pdf)
+        return
+
+    pasta_assinados = pasta_cliente / "Documentos Assinados"
+    assinaturas_existentes = [
+        caminho for caminho in pasta_assinados.glob("*")
+        if caminho.is_file()
+        and caminho.suffix.lower() in EXTENSOES_ASSINATURA
+        and chave_nome_documento(caminho) == chave_nome_documento(assinatura)
+    ]
+    if assinaturas_existentes:
+        nome_existente = assinaturas_existentes[0].name
+        notificar_cliente(
+            f"Ja existe assinatura para o documento {pdf.name}. "
+            f"Arquivo existente: {nome_existente}. A duplicata {assinatura.name} sera removida da entrada."
+        )
+        assinatura.unlink()
+        return
+
+    destino = pasta_assinados / assinatura.name
+    mover_com_retry(assinatura, destino)
+    log.info("Assinatura arquivada em %s", destino)
+
+
+def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     if caminho.suffix.lower() != EXTENSAO_PERMITIDA or not caminho.is_file():
         return
 
+    assinatura = encontrar_assinatura(caminho)
     try:
         cliente, tipo, protocolado = identificar_documento(caminho)
         grupo = pastas["protocolado"] if protocolado else pastas["nao_protocolado"]
         destino = grupo / cliente / tipo / caminho.name
         mover_com_retry(caminho, destino)
         status = "Protocolado" if protocolado else "Nao protocolado"
-        log.info("%s | cliente=%s | tipo=%s | destino=%s", status, cliente, tipo, destino)
+        log.info("%s | cliente=%s | tipo=%s | pdf=%s", status, cliente, tipo, destino)
+
+        if assinatura is not None and assinatura.exists():
+            arquivar_assinatura(assinatura, destino, pastas)
     except Exception as erro:
         log.error("Nao foi possivel processar %s: %s", caminho.name, erro)
 
 
+def processar_assinatura(caminho: Path, pastas: dict[str, Path], raiz: Path) -> None:
+    if caminho.suffix.lower() not in EXTENSOES_ASSINATURA or not caminho.is_file():
+        return
+
+    pdf = encontrar_pdf_da_assinatura(caminho, raiz)
+    if pdf is None:
+        log.warning("Assinatura aguardando PDF correspondente: %s", caminho.name)
+        return
+
+    if pdf.parent == pastas["entrada"]:
+        processar_pdf(pdf, pastas)
+        return
+
+    try:
+        arquivar_assinatura(caminho, pdf, pastas)
+    except Exception as erro:
+        log.error("Nao foi possivel arquivar a assinatura %s: %s", caminho.name, erro)
+
+
 class Handler(FileSystemEventHandler):
-    def __init__(self, pastas: dict[str, Path]):
+    def __init__(self, pastas: dict[str, Path], raiz: Path):
         self.pastas = pastas
+        self.raiz = raiz
 
     def on_created(self, event):
         if event.is_directory:
@@ -214,13 +317,19 @@ class Handler(FileSystemEventHandler):
         caminho = Path(event.src_path)
         if caminho.suffix.lower() == EXTENSAO_PERMITIDA:
             time.sleep(2)
-            processar_arquivo(caminho, self.pastas)
+            processar_pdf(caminho, self.pastas)
+        elif caminho.suffix.lower() in EXTENSOES_ASSINATURA:
+            time.sleep(2)
+            processar_assinatura(caminho, self.pastas, self.raiz)
 
 
 def processar_existentes(pastas: dict[str, Path]) -> None:
     entrada = pastas["entrada"]
     for caminho in sorted(entrada.glob("*.pdf")):
-        processar_arquivo(caminho, pastas)
+        processar_pdf(caminho, pastas)
+    for caminho in sorted(entrada.iterdir()):
+        if caminho.is_file() and caminho.suffix.lower() in EXTENSOES_ASSINATURA:
+            processar_assinatura(caminho, pastas, entrada.parent)
 
 
 def executar() -> None:
@@ -233,7 +342,7 @@ def executar() -> None:
     processar_existentes(pastas)
 
     observador = PollingObserver()
-    observador.schedule(Handler(pastas), str(pastas["entrada"]), recursive=False)
+    observador.schedule(Handler(pastas, raiz), str(pastas["entrada"]), recursive=False)
     observador.start()
     log.info("Monitorando somente PDFs em %s", pastas["entrada"])
 

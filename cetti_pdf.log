@@ -2,3 +2,24 @@
 2026-09-15 13:29:48,053 | INFO | Protocolado | cliente=REQUERIMENTO SONO QUALITY X ASTROGILDO | tipo=CNPJ | destino=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\REQUERIMENTO SONO QUALITY X ASTROGILDO\CNPJ\Requerimento Sono quality x Astrogildo.pdf
 2026-09-15 13:37:44,562 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
 2026-09-15 13:38:17,915 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | destino=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 13:50:48,864 | INFO | Protocolado | cliente=CLIENTE TESTE | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\AppData\Local\Temp\tmpykva943f\02_Protocolado\CLIENTE TESTE\REQUERIMENTO\Documento.pdf
+2026-09-15 13:50:48,866 | INFO | Assinatura arquivada em C:\Users\jlfag\AppData\Local\Temp\tmpykva943f\02_Protocolado\CLIENTE TESTE\Documentos Assinados\Documento.p7s
+2026-09-15 13:50:48,867 | WARNING | Ja existe assinatura para o documento Documento.pdf. A nova assinatura Documento.p7s permaneceu na entrada.
+2026-09-15 14:25:58,864 | WARNING | Assinatura aguardando PDF correspondente: Antes.p7s
+2026-09-15 14:25:58,896 | INFO | Nao protocolado | cliente=CLIENTE TESTE | tipo=OUTROS | pdf=C:\Users\jlfag\AppData\Local\Temp\tmpqpv_mdb5\01_Nao_Protocolado\CLIENTE TESTE\OUTROS\Antes.pdf
+2026-09-15 14:25:58,899 | INFO | Assinatura arquivada em C:\Users\jlfag\AppData\Local\Temp\tmpqpv_mdb5\01_Nao_Protocolado\CLIENTE TESTE\Documentos Assinados\Antes.p7s
+2026-09-15 14:27:44,096 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-15 14:28:32,530 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 14:29:25,989 | WARNING | Assinatura aguardando PDF correspondente: RequerimentoSonoqualityxAstrogildo.pdf.p7s
+2026-09-15 14:32:47,609 | WARNING | Ja existe assinatura para o documento Requerimento Sono quality x Astrogildo.pdf. Arquivo existente: RequerimentoSonoqualityxAstrogildo.pdf.p7s. A duplicata RequerimentoSonoqualityxAstrogildo.pdf.p7s sera removida da entrada.
+2026-09-15 14:33:42,979 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\Documentos Assinados\RequerimentoSonoqualityxAstrogildo.pdf.p7s
+2026-09-15 14:34:25,523 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-15 14:35:28,129 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 14:35:28,138 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\Documentos Assinados\RequerimentoSonoqualityxAstrogildo.pdf.p7s
+2026-09-15 14:36:29,412 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 14:36:29,420 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\Documentos Assinados\RequerimentoSonoqualityxAstrogildo.pdf.p7s
+2026-09-15 14:37:38,949 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 14:37:38,956 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\Documentos Assinados\RequerimentoSonoqualityxAstrogildo.pdf.p7s
+2026-09-15 14:40:19,039 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-15 14:40:37,304 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\02_Protocolado\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 14:40:37,305 | WARNING | Ja existe assinatura para o documento Requerimento Sono quality x Astrogildo.pdf. Arquivo existente: RequerimentoSonoqualityxAstrogildo.pdf.p7s. A duplicata RequerimentoSonoqualityxAstrogildo.pdf.p7s sera removida da entrada.
