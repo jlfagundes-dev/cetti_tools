@@ -1,6 +1,6 @@
-# Instalação no computador do cliente
+# Instalação local no computador do cliente
 
-Este passo a passo assume que o repositório já foi clonado no PC do cliente.
+Este fluxo instala o arquivista localmente e faz o monitor PDF e o painel iniciarem automaticamente quando o usuário entrar no Windows.
 
 ## 1. Clonar o repositório
 
@@ -9,72 +9,66 @@ git clone <URL_DO_REPOSITORIO>
 cd cetti_tools
 ```
 
-## 2. Configurar variáveis
+## 2. Executar o instalador local
+
+Na pasta clonada, clique duas vezes em:
+
+```bat
+instalar_cliente_local.bat
+```
+
+O instalador:
+
+- cria o ambiente virtual `.venv`;
+- instala as dependências;
+- cria o `.env` com o caminho do OneDrive, se ele ainda não existir;
+- registra a tarefa `ArquivistaDigitalCettiLocal` no Agendador de Tarefas do Windows;
+- configura o início automático no logon.
+
+Se o Python não estiver instalado, o instalador tenta instalar o Python 3.13 automaticamente usando o `winget`. Caso o computador não tenha `winget`, instale o Python pelo site oficial e execute o instalador novamente.
+
+Quando solicitado, informe a pasta raiz do OneDrive. Exemplo:
+
+```text
+C:\Users\usuario\OneDrive\Cetti_Organizador
+```
+
+## 3. Configurar variáveis
 
 Edite o arquivo `.env` com pelo menos:
 
 - `CAMINHO_RAIZ_DRIVE`
 
-Para usar a versão sem IA (`organizador_cetti_pdf.py`), `GEMINI_API_KEY` e `ADVOGADO_PADRAO` não são necessários.
+O arquivista PDF local não precisa de `GEMINI_API_KEY` nem de `ADVOGADO_PADRAO`.
 
 Opcional para comportamento remoto por domínio público:
 
 - `STREAMLIT_REMOTE_HOSTS=streamlit.cetti.me,app.seucliente.com`
 
-## 3. Rodar o setup
+## 4. Iniciar e testar
 
-Execute:
+Para testar imediatamente sem reiniciar o computador:
 
 ```bat
-setup-ambiente.bat
+iniciar_cetti_local.bat
 ```
 
-O script:
+Depois, o cliente pode acessar o painel local em:
 
-- cria o ambiente virtual `.venv`
-- instala as dependências
-- configura o túnel Cloudflare dedicado
-- cria a tarefa agendada para abrir o app no logon
+```text
+http://localhost:8501
+```
 
-Se o túnel ainda não existir, `start_cetti.ps1` sobe apenas o Streamlit local e avisa que o `setup-ambiente.bat` precisa ser executado uma vez para publicar o acesso pelo celular.
-
-## Sequência correta
-
-1. Execute `setup-ambiente.bat` uma única vez. Ele cria a `.venv`, instala dependências, cria ou reutiliza o tunnel Cloudflare e registra a inicialização automática.
-2. Depois, `start_cetti.ps1` passa a servir para iniciar o app localmente e, quando a configuração do tunnel já existir, também sobe o Cloudflare Tunnel para publicar o Streamlit.
-
-Quando o acesso vier de um host listado em `STREAMLIT_REMOTE_HOSTS`, o frontend força automaticamente o modo remoto (sem abrir Explorer no PC servidor).
+No próximo logon do Windows, o monitor e o painel serão iniciados automaticamente em segundo plano.
 
 ## Nome do aplicativo
 
 No painel e na documentação, o sistema aparece como Arquivista Digital Inteligente da Cetti.
 
-## 4. Testar localmente
+## 5. Remover a inicialização automática
 
-Abra:
-
-```bat
-executar_organizador_cetti_streamlit.bat
-```
-
-Para executar somente o organizador local, sem IA e aceitando apenas PDFs:
+Se for necessário remover a tarefa criada pelo instalador:
 
 ```bat
-executar_organizador_cetti_pdf.bat
-```
-
-Para iniciar o monitor PDF e o painel do advogado juntos:
-
-```bat
-executar_cetti_pdf_streamlit.bat
-```
-
-No próprio computador, acesse `http://localhost:8501`. Para acesso pelo celular, use o hostname público configurado pelo Cloudflare Tunnel, por exemplo `https://streamlit.cetti.me`.
-
-## 5. Acessar pelo celular
-
-Use o hostname informado no setup, por exemplo:
-
-```text
-https://streamlit.cetti.me
+schtasks /Delete /TN ArquivistaDigitalCettiLocal /F
 ```
