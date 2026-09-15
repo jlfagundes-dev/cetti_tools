@@ -63,6 +63,14 @@ Para executar somente o organizador local, sem IA e aceitando apenas PDFs:
 executar_organizador_cetti_pdf.bat
 ```
 
+Para iniciar o monitor PDF e o painel do advogado juntos:
+
+```bat
+executar_cetti_pdf_streamlit.bat
+```
+
+No próprio computador, acesse `http://localhost:8501`. Para acesso pelo celular, use o hostname público configurado pelo Cloudflare Tunnel, por exemplo `https://streamlit.cetti.me`.
+
 ## 5. Acessar pelo celular
 
 Use o hostname informado no setup, por exemplo:

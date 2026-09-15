@@ -1,6 +1,6 @@
-# Documentação do Arquivista Digital Inteligente da Cetti
+# Documentação do Arquivista Digital Cetti v3
 
-Esta pasta reúne a documentação operacional do projeto para instalação, arquitetura e uso com Cloudflare Tunnel do Arquivista Digital Inteligente da Cetti.
+Esta pasta reúne a documentação operacional do arquivista digital Cetti v3: processamento local de PDFs, monitoramento, logs e acesso ao painel Streamlit.
 
 ## Conteúdo
 

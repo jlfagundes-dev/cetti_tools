@@ -2,7 +2,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Arquivo de inicializacao silenciosa do Arquivista Digital Inteligente da Cetti.
-# Ele sobe o Streamlit localmente e, em seguida, inicia o cloudflared
+# Ele sobe o monitor PDF sem IA e o Streamlit localmente e, em seguida, inicia o cloudflared
 # apontando para a configuracao dedicada deste projeto.
 
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -55,7 +55,12 @@ if (-not $CloudflaredConfig) {
     Write-Host "Execute setup-ambiente.bat uma vez para criar o tunnel e habilitar acesso pelo celular." -ForegroundColor Yellow
 }
 
-# O Streamlit precisa ficar acessivel apenas no PC local; o tunnel publica a interface.
+# O monitor precisa ficar ativo junto com o painel para processar os arquivos da entrada.
+Start-Process -FilePath $Python -ArgumentList @(
+    'organizador_cetti_pdf.py'
+) -WorkingDirectory $ProjectRoot -WindowStyle Hidden
+
+# O Streamlit fica acessível apenas no PC local; o tunnel publica a interface.
 Start-Process -FilePath $Python -ArgumentList @(
     '-m', 'streamlit', 'run', 'app_streamlit.py',
     '--server.headless', 'true',

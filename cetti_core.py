@@ -19,6 +19,8 @@ def obter_raiz() -> Path | None:
 def garantir_estrutura(raiz: Path) -> dict[str, Path]:
     return {
         "entrada": raiz / "00_ENTRADA_AQUI",
+        "clientes": raiz / "CLIENTES",
+        # Mantidos para compatibilidade com a versão anterior baseada em status.
         "nao_protocolado": raiz / "01_Nao_Protocolado",
         "protocolado": raiz / "02_Protocolado",
     }

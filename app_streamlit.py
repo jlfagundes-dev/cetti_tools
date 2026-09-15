@@ -1,21 +1,19 @@
 import streamlit as st
-import mimetypes
-import os
+import time
+from html import escape
+from datetime import datetime
+from pathlib import Path
+import re
 
-from cetti_core import (
-    abrir_local,
-    buscar_documentos,
-    garantir_estrutura,
-    obter_raiz,
-    resolver_cliente_e_tipo,
-    resumo_caminho,
-)
-from cetti_interaction import ler_pedido_pendente, responder_pedido
-from cetti_logging import ler_logs_recentes
+from cetti_core import obter_raiz
+from cetti_logging import LOG_FILE
+
+
+PDF_LOG_FILE = Path(__file__).parent / "cetti_pdf.log"
 
 
 st.set_page_config(
-    page_title="Arquivista Digital Inteligente da Cetti",
+    page_title="Arquivista Digital Cetti v3",
     page_icon="📁",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -25,315 +23,150 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        .stApp {
-            background: linear-gradient(135deg, #f4efe8 0%, #fffaf4 38%, #eef6f1 100%);
-        }
-        [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #102a43 0%, #16324f 100%);
-            color: #f8fafc;
-        }
-        [data-testid="stSidebar"] * {
-            color: #f8fafc;
-        }
+        .stApp { background: #182b35; color: #ffffff; }
+        [data-testid="stSidebar"] { background: #182b35; }
+        [data-testid="stSidebar"] * { color: #ffffff; }
+        [data-testid="stAppViewContainer"] { background: #182b35; }
+        [data-testid="stMain"] { background: #182b35; }
+        [data-testid="stAppViewBlockContainer"] { background: #182b35; }
+        [data-testid="stHeader"] { background: #182b35; }
+        [data-testid="stToolbar"] { display: none; }
+        #MainMenu { visibility: hidden; }
+        footer { visibility: hidden; }
+        h1, h2, h3, h4, h5, h6, p, label, span, div { color: #ffffff; }
         .hero {
-            padding: 1.25rem 1.4rem;
-            border-radius: 1.4rem;
-            background: rgba(255, 255, 255, 0.68);
-            border: 1px solid rgba(16, 42, 67, 0.08);
-            box-shadow: 0 16px 40px rgba(16, 42, 67, 0.08);
+            padding: 1.5rem 1.7rem;
+            background: #182b35;
+            color: #ffffff;
+            border: 1px solid #3d5963;
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
         }
-        .result-card {
-            padding: 0.9rem 1rem;
-            border-radius: 1rem;
-            background: rgba(255, 255, 255, 0.88);
-            border: 1px solid rgba(16, 42, 67, 0.08);
-            margin-bottom: 0.75rem;
-        }
-        .stChatMessage {
-            background-color: rgba(240, 242, 246, 0.5) !important;
-        }
-        .stChatMessage p {
-            color: #1a1a1a !important;
-        }
-        [role="status"] p {
-            color: #1a1a1a !important;
-        }
-        [data-testid="stTextInput"] input {
-            color: #1a1a1a !important;
-            background: white !important;
-        }
+        .hero h1 { margin: 0 0 0.35rem 0; color: #ffffff !important; }
+        .hero p { margin: 0; color: #ffffff !important; }
+        .notices-panel { max-height: 210px; overflow-y: auto; padding-right: 0.35rem; }
+        .notice { padding: 0.85rem 1rem; border-left: 4px solid #f0a35b; background: #182b35; color: #ffffff !important; border-top: 1px solid #3d5963; border-right: 1px solid #3d5963; border-bottom: 1px solid #3d5963; margin-bottom: 0.6rem; }
+        .log-panel { max-height: 260px; overflow-y: auto; padding: 0.25rem 0.35rem 0.25rem 0; }
+        .log-line { padding: 0.45rem 0.7rem; border-bottom: 1px solid #3d5963; color: #ffffff !important; white-space: pre-wrap; }
+        [data-testid="stMetric"] { background: #182b35; border: 1px solid #3d5963; border-radius: 8px; padding: 0.8rem 1rem; }
+        [data-testid="stMetricLabel"] p, [data-testid="stMetricValue"], [data-testid="stMetricDelta"] { color: #ffffff !important; }
+        [data-testid="stAlert"] { background: #182b35 !important; border: 1px solid #3d5963 !important; }
+        [data-testid="stAlert"] *, [data-testid="stCaptionContainer"] * { color: #ffffff !important; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 
-if "mensagens" not in st.session_state:
-    st.session_state.mensagens = [
-        {"role": "assistant", "content": "Digite algo como: onde está a petição inicial do José Fagundes?"}
-    ]
+def status_monitor() -> tuple[str, str]:
+    if not LOG_FILE.exists():
+        return "Aguardando", "Nenhum monitor iniciou nesta instalação."
 
-if "logs_vistos" not in st.session_state:
-    st.session_state.logs_vistos = set()
-
-if "pedidos_vistos" not in st.session_state:
-    st.session_state.pedidos_vistos = set()
-
-
-def detectar_acesso_mobile() -> tuple[bool, str]:
-    user_agent = ""
-    try:
-        headers = st.context.headers
-        user_agent = headers.get("User-Agent") or headers.get("user-agent") or ""
-    except Exception:
-        user_agent = ""
-
-    ua = user_agent.lower()
-    mobile = any(token in ua for token in ("android", "iphone", "ipad", "mobile"))
-    return mobile, user_agent
+    ultima_modificacao = LOG_FILE.stat().st_mtime
+    idade_segundos = max(0, int(time.time() - ultima_modificacao))
+    if idade_segundos <= 30:
+        return "Ativo", f"Última atividade há {idade_segundos}s"
+    return "Monitoramento", f"Última atividade há {idade_segundos // 60}min"
 
 
-def host_requisicao() -> str:
-    try:
-        headers = st.context.headers
-        host = headers.get("X-Forwarded-Host") or headers.get("x-forwarded-host") or headers.get("Host") or headers.get("host") or ""
-        host = host.split(",")[0].strip().split(":")[0].lower()
-        return host
-    except Exception:
-        return ""
-
-
-def hosts_remotos_configurados() -> set[str]:
-    bruto = os.getenv("STREAMLIT_REMOTE_HOSTS", "streamlit.cetti.me")
-    itens = bruto.replace(";", ",").split(",")
-    return {item.strip().lower() for item in itens if item.strip()}
-
-
-def mime_do_arquivo(caminho):
-    mime, _ = mimetypes.guess_type(str(caminho))
-    return mime or "application/octet-stream"
-
-
-@st.fragment(run_every="1s")
-def feed_ao_vivo():
-    logs = ler_logs_recentes(quantidade=20)
-    for log in logs:
-        if log not in st.session_state.logs_vistos:
-            st.session_state.logs_vistos.add(log)
-            st.session_state.mensagens.append({"role": "assistant", "content": f"📋 {log}"})
-
-    pedido = ler_pedido_pendente()
-    if pedido and pedido.get("status") in {"pending", "answered"}:
-        pedido_id = pedido.get("id")
-        if pedido_id and pedido_id not in st.session_state.pedidos_vistos:
-            st.session_state.pedidos_vistos.add(pedido_id)
-            prompt = pedido.get("prompt") or f"Qual é o cliente deste documento? {pedido.get('arquivo', '')}"
-            st.session_state.mensagens.append({
-                "role": "assistant",
-                "content": f"❓ {prompt}",
-            })
-
-        if pedido.get("status") == "pending" and pedido_id:
-            st.markdown("### Responder cliente pendente")
-            st.write(f"Arquivo: {pedido.get('arquivo', 'desconhecido')}")
-            nome_cliente = st.text_input(
-                "Qual é o cliente deste documento?",
-                key=f"cliente_pendente_{pedido_id}",
-                placeholder="Digite o nome do cliente",
-            )
-            if st.button("Enviar cliente", key=f"enviar_cliente_{pedido_id}"):
-                if nome_cliente.strip():
-                    if responder_pedido(pedido_id, nome_cliente.strip()):
-                        st.session_state.mensagens.append(
-                            {"role": "assistant", "content": f"✅ Cliente informado: {nome_cliente.strip()}"}
-                        )
-                        st.rerun()
-                else:
-                    st.warning("Informe um nome de cliente antes de enviar.")
-
-    for mensagem in st.session_state.mensagens:
-        with st.chat_message(mensagem["role"]):
-            st.write(mensagem["content"])
-
-
-def executar_busca(pergunta: str) -> dict:
-    raiz = obter_raiz()
-    if raiz is None:
-        return {"erro": "Defina CAMINHO_RAIZ_DRIVE no arquivo .env antes de usar a busca."}
-
-    termo = pergunta.lower()
-    termo = termo.replace("buscar", "").replace("onde está", "").replace("onde", "").strip()
-    if not termo:
-        return {"erro": "Escreva o nome do cliente, documento ou parte do caminho."}
-
-    resultados = buscar_documentos(termo, raiz)
-    pasta_cliente, pasta_tipo = resolver_cliente_e_tipo(termo, raiz)
-    return {"termo": termo, "resultados": resultados, "pasta_cliente": pasta_cliente, "pasta_tipo": pasta_tipo, "raiz": raiz}
-
-
-st.sidebar.title("Arquivista Digital Inteligente da Cetti")
-st.sidebar.write("Triagem inteligente e busca ativa em Google Drive.")
-st.sidebar.markdown(
-    """
-    <div style="padding:0.9rem 1rem; border-radius:1rem; background:rgba(255,255,255,0.12); line-height:1.45;">
-    é um agente operacional especializado na gestão documental jurídica que atua como uma sentinela de alta precisão,
-    monitorando pastas do Google Drive em tempo real para realizar a triagem automática de documentos através da inteligência artificial.
-    Sem a necessidade de bancos de dados complexos, ele lê o conteúdo dos PDFs, identifica clientes e tipos de petição, e organiza fluxos
-    de trabalho entre arquivos originais e assinados, permitindo que o advogado localize qualquer documento instantaneamente e abra a pasta
-    correspondente pelo celular, eliminando gargalos operacionais e garantindo uma organização impecável com baixo custo de manutenção.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-acesso_mobile, _user_agent = detectar_acesso_mobile()
-host_atual = host_requisicao()
-hosts_remotos = hosts_remotos_configurados()
-forcar_remoto_por_host = bool(host_atual and host_atual in hosts_remotos)
-
-opcoes_modo = ["PC (abre Explorer)", "Celular/remoto (somente listar e baixar)"]
-modo_padrao = opcoes_modo[1] if acesso_mobile else opcoes_modo[0]
-
-if "modo_abertura" not in st.session_state:
-    st.session_state.modo_abertura = modo_padrao
-
-if forcar_remoto_por_host:
-    st.session_state.modo_abertura = opcoes_modo[1]
-    st.sidebar.warning(f"Modo remoto forçado para host público: {host_atual}")
-    st.sidebar.caption(
-        "Configuração via .env: STREAMLIT_REMOTE_HOSTS="
-        + ", ".join(sorted(hosts_remotos))
-    )
-else:
-    st.session_state.modo_abertura = st.sidebar.radio(
-        "Comportamento ao encontrar documentos",
-        opcoes_modo,
-        index=opcoes_modo.index(st.session_state.modo_abertura) if st.session_state.modo_abertura in opcoes_modo else opcoes_modo.index(modo_padrao),
+def resumo_operacional(raiz: Path | None) -> tuple[int, int, int]:
+    if raiz is None or not raiz.exists():
+        return 0, 0, 0
+    entrada = raiz / "00_ENTRADA_AQUI"
+    clientes = raiz / "CLIENTES"
+    return (
+        sum(1 for caminho in entrada.iterdir() if caminho.is_file()) if entrada.exists() else 0,
+        sum(1 for caminho in clientes.rglob("*") if caminho.is_file()) if clientes.exists() else 0,
+        sum(1 for caminho in clientes.iterdir() if caminho.is_dir()) if clientes.exists() else 0,
     )
 
-abrir_no_pc = st.session_state.modo_abertura == opcoes_modo[0]
 
-if not abrir_no_pc:
-    st.sidebar.info("Modo remoto ativo: o sistema não abre janelas no servidor; ele mostra caminhos e downloads.")
+def data_do_log(linha: str, indice: int, data_arquivo: datetime) -> datetime:
+    correspondencia = re.search(r"(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(?:,\d+)?", linha)
+    if correspondencia:
+        return datetime.strptime(
+            f"{correspondencia.group(1)} {correspondencia.group(2)}", "%Y-%m-%d %H:%M:%S"
+        )
+
+    correspondencia = re.search(r"\[(\d{2}:\d{2}:\d{2})\]", linha)
+    if correspondencia:
+        hora = datetime.strptime(correspondencia.group(1), "%H:%M:%S").time()
+        return datetime.combine(data_arquivo.date(), hora)
+
+    return datetime.min.replace(microsecond=0) + (data_arquivo - data_arquivo.replace(hour=0, minute=0, second=0, microsecond=0)) * 0 + indice * datetime.resolution
+
+
+def ler_log_completo(caminho: Path) -> list[str]:
+    if not caminho.exists():
+        return []
+    linhas = [linha.strip() for linha in caminho.read_text(encoding="utf-8", errors="replace").splitlines() if linha.strip()]
+    data_arquivo = datetime.fromtimestamp(caminho.stat().st_mtime)
+    enumeradas = [(data_do_log(linha, indice, data_arquivo), indice, linha) for indice, linha in enumerate(linhas)]
+    enumeradas.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    return [linha for _, _, linha in enumeradas]
+
+
+def renderizar_log(titulo: str, linhas: list[str]) -> None:
+    st.markdown(f"### {titulo}")
+    if not linhas:
+        st.info("Nenhum registro encontrado.")
+        return
+    conteudo = "<div class='log-panel'>"
+    conteudo += "".join(f"<div class='log-line'>{escape(linha)}</div>" for linha in linhas)
+    conteudo += "</div>"
+    st.markdown(conteudo, unsafe_allow_html=True)
+
 
 raiz = obter_raiz()
+status, detalhe_status = status_monitor()
+logs_monitor = ler_log_completo(LOG_FILE)
+logs_pdf = ler_log_completo(PDF_LOG_FILE)
+logs = logs_monitor
+avisos = [linha for linha in logs if any(palavra in linha.lower() for palavra in ("warning", "error", "aviso", "aguardando", "duplicat", "erro"))]
+entrada_count, documentos_clientes_count, clientes_count = resumo_operacional(raiz)
+
+st.sidebar.title("Arquivista Digital Cetti v3")
+st.sidebar.caption("Painel operacional do processamento local de PDFs.")
 if raiz is None:
     st.sidebar.error("CAMINHO_RAIZ_DRIVE não configurado")
 else:
-    pastas = garantir_estrutura(raiz)
     st.sidebar.success("Base conectada")
-    st.sidebar.caption(f"Raiz: {raiz}")
-    st.sidebar.caption(f"Entrada: {pastas['entrada']}")
-    st.sidebar.caption(f"Não protocolado: {pastas['nao_protocolado']}")
-    st.sidebar.caption(f"Protocolado: {pastas['protocolado']}")
-
+    st.sidebar.caption(str(raiz))
 
 st.markdown(
     """
     <div class="hero">
-        <h1 style="margin:0 0 0.35rem 0; color:#102a43;">Arquivista Digital Inteligente da Cetti</h1>
-        <p style="margin:0; color:#334e68; font-size:1.02rem;">
-            Agente operacional para triagem documental jurídica, busca instantânea e abertura da pasta correta no celular ou no PC.
-        </p>
+        <h1>Arquivista Digital Cetti v3</h1>
+        <p>Monitoramento operacional da organização automática de documentos PDF.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-
-feed_ao_vivo()
-
-
-entrada = st.chat_input("Busque por cliente, documento ou termo do arquivo")
-
-if entrada:
-    st.session_state.mensagens.append({"role": "user", "content": entrada})
-    resultado = executar_busca(entrada)
-
-    if "erro" in resultado:
-        resposta = resultado["erro"]
+st.markdown("### Estado do monitor")
+col_status, col_entrada, col_nao, col_prot = st.columns(4)
+with col_status:
+    if status == "Ativo":
+        st.success(f"{status}")
     else:
-        arquivos = resultado["resultados"]
-        termo = resultado["termo"]
-        pasta_cliente = resultado.get("pasta_cliente")
-        pasta_tipo = resultado.get("pasta_tipo")
-        if pasta_tipo:
-            nome_cliente = pasta_tipo.parent.name
-            if abrir_no_pc:
-                resposta = f"Encontrei a pasta de '{pasta_tipo.name}' para {nome_cliente}. Abrindo a pasta do tipo."
-                abrir_local(pasta_tipo)
-            else:
-                resposta = f"Encontrei a pasta de '{pasta_tipo.name}' para {nome_cliente}. Vou listar os arquivos para acesso no celular."
-        elif pasta_cliente:
-            nome_cliente = pasta_cliente.name
-            if abrir_no_pc:
-                resposta = f"Encontrei a cliente '{nome_cliente}'. Abrindo a pasta da cliente."
-                abrir_local(pasta_cliente)
-            else:
-                resposta = f"Encontrei a cliente '{nome_cliente}'. Vou listar os arquivos para acesso no celular."
-        else:
-            if arquivos:
-                resposta = f"Encontrei {len(arquivos)} arquivo(s) para '{termo}'."
-            else:
-                resposta = f"Não encontrei arquivos para '{termo}'."
+        st.warning(f"{status}")
+    st.caption(detalhe_status)
+with col_entrada:
+    st.metric("Arquivos na entrada", entrada_count)
+with col_nao:
+    st.metric("Documentos em clientes", documentos_clientes_count)
+with col_prot:
+    st.metric("Clientes", clientes_count)
 
-    st.session_state.mensagens.append({"role": "assistant", "content": resposta})
-    st.rerun()
+st.markdown("### Prompts e avisos")
+if avisos:
+    avisos_html = "<div class='notices-panel'>"
+    avisos_html += "".join(f"<div class='notice'>{escape(aviso)}</div>" for aviso in avisos)
+    avisos_html += "</div>"
+    st.markdown(avisos_html, unsafe_allow_html=True)
+else:
+    st.success("Nenhum aviso pendente no monitor.")
 
+renderizar_log("Monitor", logs_monitor)
+renderizar_log("Processamento PDF", logs_pdf)
 
-if st.session_state.mensagens and st.session_state.mensagens[-1]["role"] == "assistant":
-    ultimo = st.session_state.mensagens[-1]["content"]
-    if ultimo.startswith("Encontrei") and raiz is not None and len(st.session_state.mensagens) >= 2:
-        termo_ativo = st.session_state.mensagens[-2]["content"]
-        busca = executar_busca(termo_ativo)
-        arquivos = busca.get("resultados", [])
-        pasta_cliente = busca.get("pasta_cliente")
-        pasta_tipo = busca.get("pasta_tipo")
-
-        if pasta_tipo:
-            with st.container():
-                st.markdown(
-                    f"<div class='result-card'><strong>Tipo confirmado:</strong> {pasta_tipo.name} (Cliente: {pasta_tipo.parent.name})<br>{pasta_tipo}</div>",
-                    unsafe_allow_html=True,
-                )
-                if abrir_no_pc:
-                    st.caption("Pasta do tipo aberta automaticamente no Explorer.")
-                else:
-                    st.caption("Modo remoto: pasta identificada; use os downloads abaixo.")
-        elif pasta_cliente:
-            with st.container():
-                st.markdown(
-                    f"<div class='result-card'><strong>Cliente confirmado:</strong> {pasta_cliente.name}<br>{pasta_cliente}</div>",
-                    unsafe_allow_html=True,
-                )
-                if abrir_no_pc:
-                    st.caption("Pasta da cliente aberta automaticamente no Explorer.")
-                else:
-                    st.caption("Modo remoto: cliente identificado; use os downloads abaixo.")
-
-        for indice, caminho in enumerate(arquivos, start=1):
-            with st.container():
-                st.markdown(
-                    f"<div class='result-card'><strong>{indice}. {resumo_caminho(caminho, raiz)}</strong><br>{caminho.parent}</div>",
-                    unsafe_allow_html=True,
-                )
-                coluna_abrir_pasta, coluna_abrir_arquivo, coluna_download = st.columns(3)
-                with coluna_abrir_pasta:
-                    if st.button("Abrir pasta", key=f"pasta_{indice}_{caminho}", disabled=not abrir_no_pc):
-                        abrir_local(caminho.parent)
-                        st.toast("Pasta aberta no Explorer")
-                with coluna_abrir_arquivo:
-                    if st.button("Abrir arquivo", key=f"arquivo_{indice}_{caminho}", disabled=not abrir_no_pc):
-                        abrir_local(caminho)
-                        st.toast("Arquivo aberto no sistema")
-                with coluna_download:
-                    try:
-                        st.download_button(
-                            "Baixar",
-                            data=caminho.read_bytes(),
-                            file_name=caminho.name,
-                            mime=mime_do_arquivo(caminho),
-                            key=f"download_{indice}_{caminho}",
-                        )
-                    except Exception:
-                        st.caption("Download indisponível")

@@ -13,6 +13,7 @@ from watchdog.observers.polling import PollingObserver
 
 from cetti_core import garantir_estrutura, obter_raiz
 from cetti_logging import log_monitor
+from cetti_logging import LOG_FILE
 
 
 load_dotenv(override=True)
@@ -27,7 +28,7 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s",
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("cetti_pdf.log", encoding="utf-8"),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
     ],
 )
 log = logging.getLogger("cetti_pdf")
@@ -233,11 +234,11 @@ def notificar_cliente(mensagem: str) -> None:
 
 
 def pasta_cliente_do_pdf(pdf: Path, pastas: dict[str, Path]) -> Path | None:
-    for grupo in (pastas["protocolado"], pastas["nao_protocolado"]):
-        if grupo in pdf.parents:
-            relativo = pdf.relative_to(grupo)
-            if len(relativo.parts) >= 3:
-                return grupo / relativo.parts[0]
+    clientes = pastas["clientes"]
+    if clientes in pdf.parents:
+        relativo = pdf.relative_to(clientes)
+        if len(relativo.parts) >= 2:
+            return clientes / relativo.parts[0]
     return None
 
 
@@ -275,8 +276,7 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     assinatura = encontrar_assinatura(caminho)
     try:
         cliente, tipo, protocolado = identificar_documento(caminho)
-        grupo = pastas["protocolado"] if protocolado else pastas["nao_protocolado"]
-        destino = grupo / cliente / tipo / caminho.name
+        destino = pastas["clientes"] / cliente / tipo / caminho.name
         mover_com_retry(caminho, destino)
         status = "Protocolado" if protocolado else "Nao protocolado"
         log.info("%s | cliente=%s | tipo=%s | pdf=%s", status, cliente, tipo, destino)
@@ -339,6 +339,7 @@ def executar() -> None:
 
     pastas = garantir_estrutura(raiz)
     pastas["entrada"].mkdir(parents=True, exist_ok=True)
+    pastas["clientes"].mkdir(parents=True, exist_ok=True)
     processar_existentes(pastas)
 
     observador = PollingObserver()
