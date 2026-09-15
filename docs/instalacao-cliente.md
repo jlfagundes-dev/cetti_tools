@@ -13,9 +13,9 @@ cd cetti_tools
 
 Edite o arquivo `.env` com pelo menos:
 
-- `GEMINI_API_KEY`
 - `CAMINHO_RAIZ_DRIVE`
-- `ADVOGADO_PADRAO`
+
+Para usar a versão sem IA (`organizador_cetti_pdf.py`), `GEMINI_API_KEY` e `ADVOGADO_PADRAO` não são necessários.
 
 Opcional para comportamento remoto por domínio público:
 
@@ -55,6 +55,12 @@ Abra:
 
 ```bat
 executar_organizador_cetti_streamlit.bat
+```
+
+Para executar somente o organizador local, sem IA e aceitando apenas PDFs:
+
+```bat
+executar_organizador_cetti_pdf.bat
 ```
 
 ## 5. Acessar pelo celular
