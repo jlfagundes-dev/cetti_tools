@@ -317,3 +317,6 @@
 2026-09-16 11:45:21,320 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\DecretoRomario.pdf.p7s
 2026-09-16 11:45:21,320 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
 2026-09-16 11:47:49,634 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 11:55:57,556 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 11:57:49,790 | INFO | Arquivo Word movido para 02_ARQUIVOS_DO_WORD: teste.docx
+2026-09-16 11:57:49,793 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos

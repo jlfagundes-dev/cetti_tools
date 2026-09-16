@@ -28,6 +28,7 @@ def obter_raiz() -> Path | None:
 def garantir_estrutura(raiz: Path) -> dict[str, Path]:
     return {
         "entrada": raiz,
+        "arquivos_word": raiz / "02_ARQUIVOS_DO_WORD",
         "clientes": raiz / "01_CLIENTES",
         "clientes_antigos": raiz / "CLIENTES",
         "nao_identificados": raiz / "00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE",

@@ -58,7 +58,8 @@ except Exception as e:
     raise SystemExit(1)
 
 
-EXTENSOES_PERMITIDAS = (".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".txt")
+EXTENSOES_WORD = (".doc", ".docx", ".docm")
+EXTENSOES_PERMITIDAS = (".pdf", *EXTENSOES_WORD, ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".txt")
 
 PROMPT_SISTEMA = """
 Você é um assistente jurídico especializado em triagem.
@@ -85,6 +86,8 @@ if RAIZ is None:
 
 pastas = garantir_estrutura(RAIZ)
 ENTRADA = pastas["entrada"]
+ARQUIVOS_WORD = pastas["arquivos_word"]
+ARQUIVOS_WORD.mkdir(parents=True, exist_ok=True)
 NAO_PROTOCOLADO = pastas["nao_protocolado"]
 PROTOCOLADO = pastas["protocolado"]
 
@@ -95,7 +98,11 @@ class Handler(FileSystemEventHandler):
             arquivo = os.path.basename(event.src_path)
             log_monitor(f"✨ Novo arquivo detectado: {arquivo}")
             time.sleep(2)
-            processar_arquivo(Path(event.src_path))
+            caminho = Path(event.src_path)
+            if caminho.suffix.lower() in EXTENSOES_WORD:
+                mover_arquivo_word(caminho)
+            else:
+                processar_arquivo(caminho)
 
 
 def extrair_json_puro(texto: str) -> dict:
@@ -140,6 +147,14 @@ def identificar_com_ia(caminho_arquivo: Path) -> tuple[str, str]:
     cliente = str(data.get("cliente", "DESCONHECIDO")).strip() or "DESCONHECIDO"
     tipo = str(data.get("tipo", "OUTROS")).strip() or "OUTROS"
     return cliente, tipo
+
+
+def mover_arquivo_word(caminho_arquivo: Path) -> None:
+    """Mantém arquivos Word fora da raiz de Documentos, sem enviá-los à IA."""
+    ARQUIVOS_WORD.mkdir(parents=True, exist_ok=True)
+    destino = ARQUIVOS_WORD / caminho_arquivo.name
+    shutil.move(str(caminho_arquivo), str(destino))
+    log_monitor(f"📝 Arquivo Word movido para 02_ARQUIVOS_DO_WORD: {caminho_arquivo.name}")
 
 
 def processar_arquivo(caminho_arquivo):
@@ -231,7 +246,10 @@ if __name__ == "__main__":
             for arquivo in arquivos:
                 log_monitor(f"⚙️ Processando arquivo existente: {arquivo.name}")
                 time.sleep(1)
-                processar_arquivo(arquivo)
+                if arquivo.suffix.lower() in EXTENSOES_WORD:
+                    mover_arquivo_word(arquivo)
+                else:
+                    processar_arquivo(arquivo)
     
     log_monitor("🚀 Iniciando Arquivista Digital Inteligente da Cetti V2...")
     varrer_arquivos_existentes()

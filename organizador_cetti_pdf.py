@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 EXTENSAO_PERMITIDA = ".pdf"
 EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")
+EXTENSOES_WORD = (".doc", ".docx", ".docm")
 CLIENTE_DESCONHECIDO = "00_CLIENTE_NAO_IDENTIFICADO"
 ROTULOS_DOCUMENTO_EXTERNO = ("pagador", "nome", "titular", "beneficiario", "beneficiário")
 
@@ -362,6 +363,13 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
     log.info("Assinatura arquivada em %s", destino)
 
 
+def mover_arquivo_word(caminho: Path, pastas: dict[str, Path]) -> None:
+    destino = pastas["arquivos_word"] / caminho.name
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    mover_com_retry(caminho, destino)
+    log.info("Arquivo Word movido para 02_ARQUIVOS_DO_WORD: %s", caminho.name)
+
+
 def achatar_pasta_nao_identificados(pastas: dict[str, Path]) -> None:
     """Migra a pasta antiga de desconhecidos para o novo nivel da biblioteca."""
     pasta_antiga = pastas["clientes"] / CLIENTE_DESCONHECIDO
@@ -466,7 +474,10 @@ class Handler(FileSystemEventHandler):
             if caminho.parent == self.pastas["clientes"]:
                 processar_pendentes(self.pastas)
             return
-        if caminho.suffix.lower() == EXTENSAO_PERMITIDA:
+        if caminho.suffix.lower() in EXTENSOES_WORD and caminho.parent == self.pastas["entrada"]:
+            time.sleep(2)
+            mover_arquivo_word(caminho, self.pastas)
+        elif caminho.suffix.lower() == EXTENSAO_PERMITIDA:
             time.sleep(2)
             processar_pdf(caminho, self.pastas)
             # Depois de concluir o PDF da entrada, tenta os documentos externos se a entrada esvaziou.
@@ -480,6 +491,9 @@ class Handler(FileSystemEventHandler):
 
 def processar_existentes(pastas: dict[str, Path]) -> None:
     entrada = pastas["entrada"]
+    for caminho in sorted(entrada.iterdir()):
+        if caminho.is_file() and caminho.suffix.lower() in EXTENSOES_WORD:
+            mover_arquivo_word(caminho, pastas)
     for caminho in sorted(entrada.glob("*.pdf")):
         processar_pdf(caminho, pastas)
     for caminho in sorted(entrada.iterdir()):
@@ -495,6 +509,7 @@ def executar() -> None:
 
     pastas = garantir_estrutura(raiz)
     pastas["entrada"].mkdir(parents=True, exist_ok=True)
+    pastas["arquivos_word"].mkdir(parents=True, exist_ok=True)
     pastas["clientes"].mkdir(parents=True, exist_ok=True)
     pastas["nao_identificados"].mkdir(parents=True, exist_ok=True)
     migrar_pasta_clientes_antiga(pastas)
