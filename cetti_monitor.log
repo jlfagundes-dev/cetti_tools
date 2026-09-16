@@ -419,3 +419,18 @@
 2026-09-16 12:09:45,188 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos, Adelson.pdf
 2026-09-16 12:09:45,189 | WARNING | Ja existe assinatura para o documento Documentos, Adelson.pdf. Arquivo existente: Documentos,Adelson.pdf.p7s. A duplicata Documentos,Adelson.pdf.p7s sera removida da entrada.
 [12:09:45] AVISO AO CLIENTE: Ja existe assinatura para o documento Documentos, Adelson.pdf. Arquivo existente: Documentos,Adelson.pdf.p7s. A duplicata Documentos,Adelson.pdf.p7s sera removida da entrada.
+2026-09-16 12:09:49,630 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 12:09:49,630 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 12:09:50,785 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 12:09:50,785 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 12:09:52,807 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 12:09:53,058 | ERROR | Nao foi possivel reavaliar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:09:53,058 | ERROR | Nao foi possivel reavaliar Certidão filho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Certidão filho Romario.pdf'
+2026-09-16 12:09:54,199 | ERROR | Nao foi possivel reavaliar Contrato de trabalho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Contrato de trabalho Romario.pdf'
+2026-09-16 12:09:54,464 | ERROR | Nao foi possivel reavaliar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:09:54,464 | ERROR | Nao foi possivel reavaliar Certidão filho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Certidão filho Romario.pdf'
+2026-09-16 12:09:55,243 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 12:09:55,243 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
+2026-09-16 12:09:56,143 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Decreto Romario.pdf'
+2026-09-16 12:09:56,159 | ERROR | Nao foi possivel reavaliar Contrato de trabalho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Contrato de trabalho Romario.pdf'
+2026-09-16 12:09:58,351 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Decreto Romario.pdf'
