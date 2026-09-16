@@ -118,6 +118,11 @@ def nome_seguro(texto: str, fallback: str) -> str:
     texto = sem_acentos(texto).upper()
     texto = re.sub(r"[^A-Z0-9 ]+", " ", texto)
     texto = re.sub(r"\s+", " ", texto).strip(" .")
+    palavras = texto.split()
+    while len(palavras) > 1 and len(palavras[-1]) == 1 and palavras[-1].isalpha():
+        fragmento = palavras.pop()
+        palavras[-1] += fragmento
+    texto = " ".join(palavras)
     return texto[:100] or fallback
 
 
@@ -325,6 +330,7 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
             if not cliente:
                 continue
             assinatura = encontrar_assinatura(caminho)
+            cliente = resolver_pasta_cliente_existente(cliente, pastas["clientes"])
             destino = pastas["clientes"] / cliente / caminho.name
             mover_com_retry(caminho, destino)
             if assinatura is not None and assinatura.exists():
@@ -373,6 +379,22 @@ def encontrar_pdf_da_assinatura(caminho_assinatura: Path, raiz: Path) -> Path | 
 def notificar_cliente(mensagem: str) -> None:
     log.warning(mensagem)
     log_monitor(f"AVISO AO CLIENTE: {mensagem}")
+
+
+def resolver_pasta_cliente_existente(cliente: str, clientes_dir: Path) -> str:
+    """Reutiliza uma pasta equivalente e evita duplicatas por falha de OCR."""
+    cliente_normalizado = nome_seguro(cliente, CLIENTE_DESCONHECIDO)
+    chave_cliente = normalizar_busca_cliente(cliente_normalizado).replace(" ", "")
+    if not clientes_dir.exists():
+        return cliente_normalizado
+
+    for pasta in clientes_dir.iterdir():
+        if not pasta.is_dir() or pasta.name.startswith("00_"):
+            continue
+        chave_pasta = normalizar_busca_cliente(pasta.name).replace(" ", "")
+        if chave_pasta == chave_cliente:
+            return pasta.name
+    return cliente_normalizado
 
 
 def pasta_cliente_do_pdf(pdf: Path, pastas: dict[str, Path]) -> Path | None:
@@ -483,6 +505,8 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     assinatura = encontrar_assinatura(caminho)
     try:
         cliente, protocolado = identificar_documento(caminho)
+        if cliente != CLIENTE_DESCONHECIDO:
+            cliente = resolver_pasta_cliente_existente(cliente, pastas["clientes"])
         pasta_destino = (
             pastas["nao_identificados"]
             if cliente == CLIENTE_DESCONHECIDO
