@@ -21,6 +21,7 @@ load_dotenv(override=True)
 EXTENSAO_PERMITIDA = ".pdf"
 EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")
 CLIENTE_DESCONHECIDO = "00_CLIENTE_NAO_IDENTIFICADO"
+ROTULOS_DOCUMENTO_EXTERNO = ("pagador", "nome", "titular", "beneficiario", "beneficiário")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -183,6 +184,48 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
     return CLIENTE_DESCONHECIDO
 
 
+def normalizar_busca_cliente(texto: str) -> str:
+    """Normaliza o texto para comparar nomes extraidos de documentos externos."""
+    return re.sub(r"[^A-Z0-9]+", " ", sem_acentos(texto).upper()).strip()
+
+
+def extrair_nomes_externos(texto: str) -> list[str]:
+    """Extrai nomes de campos externos, inclusive quando o valor esta na linha seguinte."""
+    linhas = [re.sub(r"\s+", " ", linha).strip() for linha in texto.splitlines()]
+    rotulos = "|".join(re.escape(rotulo) for rotulo in ROTULOS_DOCUMENTO_EXTERNO)
+    candidatos = []
+    for indice, linha in enumerate(linhas):
+        correspondencia = re.search(rf"(?:^|\b)(?:{rotulos})\s*[:.\-]?\s*(.+)$", linha, re.IGNORECASE)
+        if correspondencia:
+            candidatos.append(correspondencia.group(1))
+        elif re.fullmatch(rf"(?:{rotulos})\s*[:.\-]?", linha, re.IGNORECASE) and indice + 1 < len(linhas):
+            candidatos.append(linhas[indice + 1])
+    return [normalizar_busca_cliente(candidato) for candidato in candidatos if candidato]
+
+
+def buscar_cliente_externo(texto: str, nome_arquivo: str, clientes_dir: Path) -> str:
+    """Procura um cliente ja cadastrado sem criar pasta durante o fluxo externo."""
+    conteudo = normalizar_busca_cliente(f"{nome_arquivo}\n{texto}")
+    candidatos = extrair_nomes_externos(texto) + [conteudo]
+    melhor_cliente = ""
+    melhor_pontuacao = 0
+    for pasta in clientes_dir.iterdir():
+        if not pasta.is_dir() or pasta.name.startswith("00_"):
+            continue
+        nome = normalizar_busca_cliente(pasta.name)
+        tokens = [token for token in nome.split() if len(token) > 2]
+        pontuacao = max(
+            sum(token in candidato.split() for token in tokens)
+            for candidato in candidatos
+        ) if tokens else 0
+        if nome and nome in conteudo:
+            pontuacao += 100
+        if pontuacao > melhor_pontuacao:
+            melhor_pontuacao = pontuacao
+            melhor_cliente = pasta.name
+    return melhor_cliente if melhor_pontuacao >= 2 else ""
+
+
 def esta_protocolado(texto: str, nome_arquivo: str) -> bool:
     conteudo = sem_acentos(f"{nome_arquivo}\n{texto}").lower()
     marcadores = ("protocolado", "protocolo", "distribuido", "distribuicao", "processo distribuido")
@@ -205,6 +248,30 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
             if tentativa == 3:
                 raise
             time.sleep(5)
+
+
+def processar_pendentes(pastas: dict[str, Path]) -> None:
+    """Move pendentes somente quando o documento externo corresponde a cliente cadastrado."""
+    entrada = pastas["entrada"]
+    if any(caminho.is_file() for caminho in entrada.iterdir()):
+        return
+    pendentes = pastas["clientes"] / CLIENTE_DESCONHECIDO
+    if not pendentes.exists():
+        return
+    for caminho in sorted(pendentes.glob("*.pdf")):
+        try:
+            texto = extrair_texto_pdf(caminho)
+            cliente = buscar_cliente_externo(texto, caminho.name, pastas["clientes"])
+            if not cliente:
+                continue
+            assinatura = encontrar_assinatura(caminho)
+            destino = pastas["clientes"] / cliente / caminho.name
+            mover_com_retry(caminho, destino)
+            if assinatura is not None and assinatura.exists():
+                arquivar_assinatura(assinatura, destino, pastas)
+            log.info("Documento externo identificado | cliente=%s | pdf=%s", cliente, caminho.name)
+        except Exception as erro:
+            log.error("Nao foi possivel reavaliar %s: %s", caminho.name, erro)
 
 
 def chave_nome_documento(caminho: Path) -> str:
@@ -263,7 +330,8 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
         log.warning("PDF correspondente encontrado, mas a pasta do cliente nao foi identificada: %s", pdf)
         return
 
-    pasta_assinados = pasta_cliente / "Documentos Assinados"
+    # A pasta de nao identificados mantem PDFs e assinaturas diretamente no mesmo nivel.
+    pasta_assinados = pasta_cliente if pasta_cliente.name == CLIENTE_DESCONHECIDO else pasta_cliente / "Documentos Assinados"
     assinaturas_existentes = [
         caminho for caminho in pasta_assinados.glob("*")
         if caminho.is_file()
@@ -282,6 +350,25 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
     destino = pasta_assinados / assinatura.name
     mover_com_retry(assinatura, destino)
     log.info("Assinatura arquivada em %s", destino)
+
+
+def achatar_pasta_nao_identificados(pastas: dict[str, Path]) -> None:
+    """Move arquivos de subpastas antigas para a raiz de nao identificados."""
+    pasta_pendentes = pastas["clientes"] / CLIENTE_DESCONHECIDO
+    if not pasta_pendentes.exists():
+        return
+    for subpasta in list(pasta_pendentes.iterdir()):
+        if not subpasta.is_dir():
+            continue
+        for item in subpasta.iterdir():
+            destino = pasta_pendentes / item.name
+            if destino.exists():
+                destino = pasta_pendentes / f"{item.stem}_duplicado{item.suffix}"
+            mover_com_retry(item, destino)
+        try:
+            subpasta.rmdir()
+        except OSError:
+            log.warning("Nao foi possivel remover a subpasta antiga: %s", subpasta)
 
 
 def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
@@ -327,15 +414,21 @@ class Handler(FileSystemEventHandler):
         self.raiz = raiz
 
     def on_created(self, event):
-        if event.is_directory:
-            return
         caminho = Path(event.src_path)
+        if event.is_directory:
+            if caminho.parent == self.pastas["clientes"]:
+                processar_pendentes(self.pastas)
+            return
         if caminho.suffix.lower() == EXTENSAO_PERMITIDA:
             time.sleep(2)
             processar_pdf(caminho, self.pastas)
+            # Depois de concluir o PDF da entrada, tenta os documentos externos se a entrada esvaziou.
+            processar_pendentes(self.pastas)
         elif caminho.suffix.lower() in EXTENSOES_ASSINATURA:
             time.sleep(2)
             processar_assinatura(caminho, self.pastas, self.raiz)
+            # Depois de concluir a assinatura da entrada, tenta os documentos externos se a entrada esvaziou.
+            processar_pendentes(self.pastas)
 
 
 def processar_existentes(pastas: dict[str, Path]) -> None:
@@ -345,6 +438,7 @@ def processar_existentes(pastas: dict[str, Path]) -> None:
     for caminho in sorted(entrada.iterdir()):
         if caminho.is_file() and caminho.suffix.lower() in EXTENSOES_ASSINATURA:
             processar_assinatura(caminho, pastas, entrada.parent)
+    processar_pendentes(pastas)
 
 
 def executar() -> None:
@@ -355,10 +449,13 @@ def executar() -> None:
     pastas = garantir_estrutura(raiz)
     pastas["entrada"].mkdir(parents=True, exist_ok=True)
     pastas["clientes"].mkdir(parents=True, exist_ok=True)
+    achatar_pasta_nao_identificados(pastas)
     processar_existentes(pastas)
 
     observador = PollingObserver()
-    observador.schedule(Handler(pastas, raiz), str(pastas["entrada"]), recursive=False)
+    handler = Handler(pastas, raiz)
+    observador.schedule(handler, str(pastas["entrada"]), recursive=False)
+    observador.schedule(handler, str(pastas["clientes"]), recursive=False)
     observador.start()
     log.info("Monitorando somente PDFs em %s", pastas["entrada"])
 

@@ -53,3 +53,236 @@
 2026-09-16 10:02:30,943 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
 2026-09-16 10:02:31,004 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
 2026-09-16 10:02:31,022 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:19:25,848 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:20:30,727 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 10:20:30,738 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 10:20:34,443 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:20:35,229 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:20:35,240 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:20:38,451 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 10:20:38,454 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:20:42,731 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contrato de trabalho Romario.pdf
+2026-09-16 10:20:46,249 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Decreto Romario.pdf
+2026-09-16 10:20:46,251 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:20:50,919 | ERROR | Nao foi possivel processar Decreto Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:20:53,360 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 10:20:53,363 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 10:20:55,375 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 10:20:59,921 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Certidão filha Romario.pdf
+2026-09-16 10:20:59,925 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:21:04,226 | INFO | Nao protocolado | cliente=DO PAGADORICPF ENDEREGO CIDADE UF CEP | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:21:04,295 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 10:21:06,535 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 10:21:06,542 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:21:11,727 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:21:15,655 | ERROR | Nao foi possivel processar 1-2 Adelson.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:21:39,021 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\jlfag\\OneDrive\\Cetti_Organizador\\00_ENTRADA_AQUI\\Documentos, Adelson-compactado.pdf'
+2026-09-16 10:21:39,207 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:21:39,217 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:31:29,011 | INFO | Nao protocolado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=C:\Users\jlfag\AppData\Local\Temp\tmpbrs0edks\CLIENTES\CASARAAO MATERIAIS DE CONSTRUCAO LTDA\cobranca.pdf
+2026-09-16 10:35:36,711 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:36:40,912 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 10:36:40,917 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 10:36:41,182 | ERROR | Nao foi possivel processar Contestação Romário.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:36:45,375 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 10:36:45,400 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:36:46,039 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:36:46,088 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:36:48,652 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contrato de trabalho Romario.pdf
+2026-09-16 10:36:54,072 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Certidão filha Romario.pdf
+2026-09-16 10:36:54,140 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:37:02,217 | INFO | Nao protocolado | cliente=GISLENE AVELINA DE SOUZA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\GISLENE AVELINA DE SOUZA\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:37:02,526 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Certidão filho Romario.pdf
+2026-09-16 10:37:02,532 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:37:17,514 | INFO | Nao protocolado | cliente=DO PAGADORICPF ENDEREGO CIDADE UF CEP | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:37:17,625 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 10:37:27,173 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:37:27,245 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 10:37:27,252 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:37:30,194 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 10:37:30,206 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 10:37:31,085 | ERROR | Nao foi possivel processar Documentos, Adelson.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:37:31,811 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 10:38:08,907 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\jlfag\\OneDrive\\Cetti_Organizador\\00_ENTRADA_AQUI\\Documentos, Adelson-compactado.pdf'
+2026-09-16 10:38:10,902 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:38:10,935 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:38:11,768 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:43:13,211 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=C:\Users\jlfag\AppData\Local\Temp\tmpzaxlj0mw\CLIENTES\CASARAAO MATERIAIS DE CONSTRUCAO LTDA\cobranca.pdf
+2026-09-16 10:47:01,399 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:47:37,438 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 10:47:41,937 | INFO | Nao protocolado | cliente=E MATRICULA DOS GEMEOS | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\E MATRICULA DOS GEMEOS\Certidão filha Romario.pdf
+2026-09-16 10:47:41,944 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\E MATRICULA DOS GEMEOS\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:47:46,857 | ERROR | Nao foi possivel processar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:47:47,726 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 10:47:47,747 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:47:49,192 | ERROR | Nao foi possivel processar Certidão filho Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:47:50,595 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 10:47:50,618 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 10:47:56,580 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:47:56,590 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:47:58,007 | INFO | Nao protocolado | cliente=DO PAGADORICPF ENDEREGO CIDADE UF CEP | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:47:58,018 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 10:47:59,707 | INFO | Nao protocolado | cliente=00_CLIENTES_NAO_IDENTIFICADOS | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTES_NAO_IDENTIFICADOS\Documentos, Adelson.pdf
+2026-09-16 10:47:59,723 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTES_NAO_IDENTIFICADOS\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:48:02,037 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 10:48:04,987 | INFO | Nao protocolado | cliente=00_CLIENTES_NAO_IDENTIFICADOS | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTES_NAO_IDENTIFICADOS\Decreto Romario.pdf
+2026-09-16 10:48:04,995 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTES_NAO_IDENTIFICADOS\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:48:08,162 | ERROR | Nao foi possivel processar Decreto Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:48:12,663 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:48:12,677 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:48:13,303 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:48:13,562 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:48:16,644 | ERROR | Nao foi possivel processar Comprovantes de Pagamento Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:48:17,539 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 10:48:17,551 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 10:49:27,253 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:49:52,946 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:49:53,038 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 10:49:53,042 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:49:57,512 | ERROR | Nao foi possivel processar Comprovantes de Pagamento Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:49:58,490 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 10:50:01,075 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 10:50:01,083 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 10:50:10,497 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Certidão filha Romario.pdf
+2026-09-16 10:50:10,506 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:50:10,497 | ERROR | Nao foi possivel processar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:50:12,473 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:50:12,491 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:50:17,499 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 10:50:17,513 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:50:17,520 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 10:50:17,544 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:50:20,884 | ERROR | Nao foi possivel processar Documentos, Adelson.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:50:21,849 | ERROR | Nao foi possivel processar Certidão filho Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:50:24,035 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:50:24,040 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:50:24,410 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 10:50:24,416 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 10:50:28,014 | ERROR | Nao foi possivel processar CTPS fls 01 Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 10:50:30,513 | INFO | Nao protocolado | cliente=DO PAGADORICPF ENDEREGO CIDADE UF CEP | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:50:30,537 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\DO PAGADORICPF ENDEREGO CIDADE UF CEP\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 10:50:31,484 | INFO | Nao protocolado | cliente=00_CLIENTES_NAO_IDENTIFICADOS | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTES_NAO_IDENTIFICADOS\CTPS fls 02 Romario.pdf
+2026-09-16 10:50:34,087 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:52:20,469 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 10:52:39,392 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 10:52:39,401 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:52:41,734 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 10:52:41,740 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 10:52:46,137 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:52:46,153 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:52:53,470 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filha Romario.pdf
+2026-09-16 10:52:53,475 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:52:59,531 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:53:06,287 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 10:53:11,377 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:53:15,945 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 10:53:40,185 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 10:53:40,191 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:53:42,950 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 10:53:42,968 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 10:54:06,735 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:54:06,774 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:54:12,145 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 10:54:12,155 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:54:22,354 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:54:22,362 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 11:04:39,703 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=certidao.pdf
+2026-09-16 11:04:39,704 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=cobranca.pdf
+2026-09-16 11:04:39,705 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=formulario.pdf
+2026-09-16 11:04:39,706 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=romario.pdf
+2026-09-16 11:04:53,704 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=certidao.pdf
+2026-09-16 11:04:53,705 | INFO | Documento externo identificado | cliente=CASARAAO MATERIAIS DE CONSTRUCAO LTDA | pdf=cobranca.pdf
+2026-09-16 11:04:53,705 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=formulario.pdf
+2026-09-16 11:04:53,706 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=romario.pdf
+2026-09-16 11:06:26,043 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 11:06:27,371 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 11:06:29,794 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 11:06:32,641 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
+2026-09-16 11:06:46,953 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 11:07:26,424 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 11:07:26,426 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 11:07:29,428 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 11:07:31,545 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 11:07:31,548 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 11:07:35,109 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filha Romario.pdf
+2026-09-16 11:07:35,111 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 11:07:38,301 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 11:07:38,303 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 11:07:45,410 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 11:07:50,079 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 11:07:52,751 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 11:07:52,753 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 11:07:57,551 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 11:08:04,875 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 11:08:04,877 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 11:08:14,688 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 11:08:14,690 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 11:08:17,902 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
+2026-09-16 11:08:17,904 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 11:08:24,101 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 11:08:24,104 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 11:08:26,317 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 11:08:27,438 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 11:08:29,544 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 11:08:31,803 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
+2026-09-16 11:12:46,540 | INFO | Assinatura arquivada em C:\Users\jlfag\AppData\Local\Temp\tmp8v9_86tm\CLIENTES\ROMARIO\Documentos Assinados\doc.p7s
+2026-09-16 11:13:42,733 | WARNING | Nao foi possivel remover a subpasta antiga: C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos Assinados
+2026-09-16 11:14:01,647 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 11:14:30,691 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 11:14:33,381 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 11:14:33,383 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPSfls01Romario.pdf.p7s
+2026-09-16 11:14:35,481 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 11:14:35,485 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 11:14:43,389 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 11:14:43,391 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 11:14:46,886 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filha Romario.pdf
+2026-09-16 11:14:46,888 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CertidãofilhaRomario.pdf.p7s
+2026-09-16 11:14:52,004 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 11:14:55,037 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 11:14:55,038 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CertidãofilhoRomario.pdf.p7s
+2026-09-16 11:14:59,813 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 11:14:59,815 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\DecretoRomario.pdf.p7s
+2026-09-16 11:15:04,635 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 11:15:11,882 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 11:15:11,883 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos,Adelson.pdf.p7s
+2026-09-16 11:15:14,079 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 11:15:14,080 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 11:15:19,302 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
+2026-09-16 11:15:19,304 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 11:15:30,079 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 11:15:32,211 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 11:15:33,198 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 11:15:35,028 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 11:15:37,037 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
+2026-09-16 11:20:13,437 | INFO | Assinatura arquivada em C:\Users\jlfag\AppData\Local\Temp\tmpq1e4gxf4\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\certidao Romario.pdf.p7s
+2026-09-16 11:20:13,437 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=certidao Romario.pdf
+2026-09-16 11:21:00,351 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 11:21:35,365 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 11:21:35,369 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos,Adelson.pdf.p7s
+2026-09-16 11:21:38,009 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 11:21:38,011 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPSfls01Romario.pdf.p7s
+2026-09-16 11:21:40,868 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 11:21:40,872 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\DecretoRomario.pdf.p7s
+2026-09-16 11:21:51,011 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 11:21:51,014 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 11:21:55,690 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 11:22:02,542 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 11:22:05,998 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filha Romario.pdf
+2026-09-16 11:22:05,999 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CertidãofilhaRomario.pdf.p7s
+2026-09-16 11:22:08,195 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 11:22:08,199 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 11:22:11,229 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 11:22:11,231 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\CertidãofilhoRomario.pdf.p7s
+2026-09-16 11:22:14,481 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
+2026-09-16 11:22:14,485 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 11:22:16,581 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 11:22:16,584 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 11:22:27,412 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 11:22:32,527 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\00_CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 11:22:34,753 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 11:22:34,753 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 11:22:35,740 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 11:22:35,741 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 11:22:38,025 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 11:22:40,149 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 11:22:40,149 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
