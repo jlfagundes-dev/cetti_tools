@@ -320,3 +320,102 @@
 2026-09-16 11:55:57,556 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
 2026-09-16 11:57:49,790 | INFO | Arquivo Word movido para 02_ARQUIVOS_DO_WORD: teste.docx
 2026-09-16 11:57:49,793 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 12:04:00,007 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 12:04:58,488 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 12:05:50,692 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Documentos
+2026-09-16 12:06:58,557 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 12:06:58,564 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 12:07:03,298 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CTPS fls 01 Romario.pdf
+2026-09-16 12:07:03,302 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CTPSfls01Romario.pdf.p7s
+2026-09-16 12:07:03,561 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Contrato de trabalho Romario.pdf
+2026-09-16 12:07:06,259 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CTPS fls 02 Romario.pdf
+2026-09-16 12:07:07,258 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Guia de Recolhimeento locomoção.pdf
+2026-09-16 12:07:07,262 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 12:07:09,608 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Decreto Romario.pdf
+2026-09-16 12:07:09,612 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\DecretoRomario.pdf.p7s
+2026-09-16 12:07:11,280 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos, Adelson.pdf
+2026-09-16 12:07:11,286 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos,Adelson.pdf.p7s
+2026-09-16 12:07:13,028 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Comprovantes de Pagamento Romario.pdf
+2026-09-16 12:07:14,792 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Certidão filho Romario.pdf
+2026-09-16 12:07:14,797 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CertidãofilhoRomario.pdf.p7s
+2026-09-16 12:07:15,242 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Certidão filha Romario.pdf
+2026-09-16 12:07:15,247 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CertidãofilhaRomario.pdf.p7s
+2026-09-16 12:07:24,159 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\1-2 Adelson.pdf
+2026-09-16 12:07:41,318 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos, Adelson-compactado.pdf
+2026-09-16 12:07:41,324 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 12:07:43,303 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:07:43,429 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:07:46,139 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 12:07:46,148 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 12:07:51,053 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 12:07:51,054 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filha Romario.pdf
+2026-09-16 12:07:52,648 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 12:07:52,649 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Certidão filho Romario.pdf
+2026-09-16 12:07:54,476 | ERROR | Nao foi possivel reavaliar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:07:54,476 | ERROR | Nao foi possivel reavaliar Certidão filho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Certidão filho Romario.pdf'
+2026-09-16 12:07:55,249 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Contrato de trabalho Romario.pdf
+2026-09-16 12:07:55,823 | ERROR | Nao foi possivel reavaliar Certidão filha Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:07:55,823 | ERROR | Nao foi possivel reavaliar Certidão filho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Certidão filho Romario.pdf'
+2026-09-16 12:07:55,893 | ERROR | Nao foi possivel reavaliar Contrato de trabalho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Contrato de trabalho Romario.pdf'
+2026-09-16 12:07:57,337 | ERROR | Nao foi possivel reavaliar Contrato de trabalho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Contrato de trabalho Romario.pdf'
+2026-09-16 12:07:59,242 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 12:07:59,243 | INFO | Documento externo identificado | cliente=ROMARIO FERREIRA DA SILVA | pdf=Decreto Romario.pdf
+2026-09-16 12:07:59,465 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Decreto Romario.pdf'
+2026-09-16 12:08:03,585 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:08:35,160 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:35,214 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:39,548 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:44,566 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:44,622 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:46,423 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:46,465 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:48,645 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:50,015 | ERROR | Nao foi possivel reavaliar 1-2 Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:50,092 | ERROR | Nao foi possivel reavaliar 1-2 Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:50,671 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:51,727 | ERROR | Nao foi possivel reavaliar Comprovantes de Pagamento Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:51,807 | ERROR | Nao foi possivel reavaliar Comprovantes de Pagamento Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:52,797 | ERROR | Nao foi possivel reavaliar CTPS fls 01 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:52,865 | ERROR | Nao foi possivel reavaliar CTPS fls 01 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:53,824 | ERROR | Nao foi possivel reavaliar CTPS fls 02 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:53,851 | ERROR | Nao foi possivel reavaliar 1-2 Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:53,938 | ERROR | Nao foi possivel reavaliar CTPS fls 02 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:55,322 | ERROR | Nao foi possivel reavaliar Comprovantes de Pagamento Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:56,529 | ERROR | Nao foi possivel reavaliar CTPS fls 01 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:08:57,598 | ERROR | Nao foi possivel reavaliar CTPS fls 02 Romario.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:03,076 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:03,278 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:06,877 | ERROR | Nao foi possivel reavaliar Documentos, Adelson-compactado.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:12,341 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:12,427 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:14,461 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:14,594 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:16,581 | ERROR | Nao foi possivel reavaliar Documentos, Adelson.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:17,676 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Decreto Romario.pdf
+2026-09-16 12:09:17,680 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\DecretoRomario.pdf.p7s
+2026-09-16 12:09:18,358 | ERROR | Nao foi possivel reavaliar Guia de Recolhimeento locomoção.pdf: [WinError 3] The system cannot find the path specified: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\01_CLIENTES'
+2026-09-16 12:09:20,459 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 12:09:20,462 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 12:09:21,720 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Contrato de trabalho Romario.pdf
+2026-09-16 12:09:23,757 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\1-2 Adelson.pdf
+2026-09-16 12:09:24,913 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CTPS fls 01 Romario.pdf
+2026-09-16 12:09:24,916 | WARNING | Ja existe assinatura para o documento CTPS fls 01 Romario.pdf. Arquivo existente: CTPSfls01Romario.pdf.p7s. A duplicata CTPSfls01Romario.pdf.p7s sera removida da entrada.
+[12:09:24] AVISO AO CLIENTE: Ja existe assinatura para o documento CTPS fls 01 Romario.pdf. Arquivo existente: CTPSfls01Romario.pdf.p7s. A duplicata CTPSfls01Romario.pdf.p7s sera removida da entrada.
+2026-09-16 12:09:25,436 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos, Adelson-compactado.pdf
+2026-09-16 12:09:25,439 | WARNING | Ja existe assinatura para o documento Documentos, Adelson-compactado.pdf. Arquivo existente: Documentos,Adelson-compactado.pdf.p7s. A duplicata Documentos,Adelson-compactado.pdf.p7s sera removida da entrada.
+[12:09:25] AVISO AO CLIENTE: Ja existe assinatura para o documento Documentos, Adelson-compactado.pdf. Arquivo existente: Documentos,Adelson-compactado.pdf.p7s. A duplicata Documentos,Adelson-compactado.pdf.p7s sera removida da entrada.
+2026-09-16 12:09:27,830 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 12:09:27,837 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\01_CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 12:09:28,679 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Certidão filho Romario.pdf
+2026-09-16 12:09:28,684 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CertidãofilhoRomario.pdf.p7s
+2026-09-16 12:09:29,640 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Certidão filha Romario.pdf
+2026-09-16 12:09:29,645 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CertidãofilhaRomario.pdf.p7s
+2026-09-16 12:09:34,393 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Guia de Recolhimeento locomoção.pdf
+2026-09-16 12:09:34,397 | WARNING | Ja existe assinatura para o documento Guia de Recolhimeento locomoção.pdf. Arquivo existente: GuiadeRecolhimeentolocomoção.pdf.p7s. A duplicata GuiadeRecolhimeentolocomoção.pdf.p7s sera removida da entrada.
+[12:09:34] AVISO AO CLIENTE: Ja existe assinatura para o documento Guia de Recolhimeento locomoção.pdf. Arquivo existente: GuiadeRecolhimeentolocomoção.pdf.p7s. A duplicata GuiadeRecolhimeentolocomoção.pdf.p7s sera removida da entrada.
+2026-09-16 12:09:36,854 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\CTPS fls 02 Romario.pdf
+2026-09-16 12:09:38,292 | ERROR | Nao foi possivel processar Guia de Recolhimeento locomoção.pdf: [WinError 2] The system cannot find the file specified
+2026-09-16 12:09:42,517 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Comprovantes de Pagamento Romario.pdf
+2026-09-16 12:09:45,188 | INFO | Nao protocolado | cliente=00_CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Documentos\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\Documentos, Adelson.pdf
+2026-09-16 12:09:45,189 | WARNING | Ja existe assinatura para o documento Documentos, Adelson.pdf. Arquivo existente: Documentos,Adelson.pdf.p7s. A duplicata Documentos,Adelson.pdf.p7s sera removida da entrada.
+[12:09:45] AVISO AO CLIENTE: Ja existe assinatura para o documento Documentos, Adelson.pdf. Arquivo existente: Documentos,Adelson.pdf.p7s. A duplicata Documentos,Adelson.pdf.p7s sera removida da entrada.
