@@ -90,7 +90,22 @@ PALAVRAS_IGNORADAS = {
     "brasileiro",
     "brasileira",
     "qualificacao",
-    "qualificacao",
+}
+
+PALAVRAS_DE_FRASE = {
+    "alem",
+    "disso",
+    "esclareceu",
+    "esclarece",
+    "testemunha",
+    "conforme",
+    "declarou",
+    "informou",
+    "requer",
+    "requerendo",
+    "processo",
+    "peticao",
+    "documento",
 }
 
 
@@ -147,7 +162,10 @@ def limpar_candidato(valor: str) -> str:
     valor = re.sub(r"\b(?:cpf|rg|cnpj)\s*[:.\-]?\s*[0-9./-]+", "", valor, flags=re.IGNORECASE)
     palavras = [palavra for palavra in valor.split() if palavra.lower() not in PALAVRAS_IGNORADAS]
     valor = " ".join(palavras).strip(" .,:;-|")
-    if not 2 <= len(valor.split()) <= 8:
+    palavras_normalizadas = {palavra.lower() for palavra in normalizar_busca_cliente(valor).split()}
+    if not 2 <= len(valor.split()) <= 8 or len(valor) > 80:
+        return ""
+    if palavras_normalizadas & PALAVRAS_DE_FRASE:
         return ""
     if any(char.isdigit() for char in valor):
         return ""
@@ -217,9 +235,8 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
         if candidato_citado_no_nome_arquivo(candidato, nome_arquivo):
             return nome_seguro(candidato, CLIENTE_DESCONHECIDO)
 
-    if candidatos:
-        return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
-
+    # Sem correspondencia com o nome do arquivo, nao ha seguranca suficiente
+    # para criar uma pasta de cliente a partir de um candidato do texto.
     return CLIENTE_DESCONHECIDO
 
 
