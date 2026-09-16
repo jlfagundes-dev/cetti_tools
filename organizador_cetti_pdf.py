@@ -20,8 +20,7 @@ load_dotenv(override=True)
 
 EXTENSAO_PERMITIDA = ".pdf"
 EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")
-CLIENTE_DESCONHECIDO = "CLIENTE_NAO_IDENTIFICADO"
-TIPO_DESCONHECIDO = "OUTROS"
+CLIENTE_DESCONHECIDO = "00_CLIENTE_NAO_IDENTIFICADO"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -34,33 +33,6 @@ logging.basicConfig(
 log = logging.getLogger("cetti_pdf")
 
 
-TIPOS_DOCUMENTO = (
-    ("requerimento", "REQUERIMENTO"),
-    ("comprovante de residencia", "COMPROVANTE_RESIDENCIA"),
-    ("comprovante de endereço", "COMPROVANTE_RESIDENCIA"),
-    ("contrato de honorarios", "CONTRATO_HONORARIOS"),
-    ("contrato de honorários", "CONTRATO_HONORARIOS"),
-    ("procuracao", "PROCURACAO"),
-    ("procuração", "PROCURACAO"),
-    ("peticao inicial", "PETICAO_INICIAL"),
-    ("petição inicial", "PETICAO_INICIAL"),
-    ("contestacao", "CONTESTACAO"),
-    ("contestação", "CONTESTACAO"),
-    ("sentenca", "SENTENCA"),
-    ("sentença", "SENTENCA"),
-    ("certidao", "CERTIDAO"),
-    ("certidão", "CERTIDAO"),
-    ("oficio", "OFICIO"),
-    ("ofício", "OFICIO"),
-    ("intimacao", "INTIMACAO"),
-    ("intimação", "INTIMACAO"),
-    ("rg", "RG"),
-    ("cpf", "CPF"),
-    ("cnpj", "CNPJ"),
-    ("laudo", "LAUDO"),
-    ("recibo", "RECIBO"),
-)
-
 ROTULOS_CLIENTE = (
     "cliente",
     "requerente",
@@ -71,6 +43,16 @@ ROTULOS_CLIENTE = (
     "interessado",
     "interessada",
     "nome completo",
+)
+
+ROTULOS_PARTE_CLIENTE = (
+    "reu",
+    "réu",
+    "requerido",
+    "requerida",
+    "vitima",
+    "vítima",
+    "outorgante",
 )
 
 PALAVRAS_IGNORADAS = {
@@ -106,6 +88,29 @@ def nome_seguro(texto: str, fallback: str) -> str:
     return texto[:100] or fallback
 
 
+def extrair_texto_ocr(caminho: Path) -> str:
+    try:
+        import importlib
+
+        fitz = importlib.import_module("pymupdf")
+        pytesseract = importlib.import_module("pytesseract")
+        image_module = importlib.import_module("PIL.Image")
+    except ImportError as erro:
+        raise ValueError(
+            "PDF escaneado: instale pymupdf, pytesseract, Pillow e o executavel Tesseract OCR."
+        ) from erro
+
+    paginas = []
+    idiomas = set(pytesseract.get_languages(config=""))
+    idioma = "por+eng" if {"por", "eng"}.issubset(idiomas) else "por" if "por" in idiomas else "eng"
+    with fitz.open(caminho) as documento:
+        for pagina in documento:
+            pixmap = pagina.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+            imagem = image_module.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
+            paginas.append(pytesseract.image_to_string(imagem, lang=idioma))
+    return "\n".join(paginas).strip()
+
+
 def extrair_texto_pdf(caminho: Path) -> str:
     leitor = PdfReader(str(caminho))
     paginas = []
@@ -113,16 +118,10 @@ def extrair_texto_pdf(caminho: Path) -> str:
         paginas.append(pagina.extract_text() or "")
     texto = "\n".join(paginas).strip()
     if not texto:
-        raise ValueError("PDF sem texto extraivel. PDFs digitalizados exigem OCR, que esta versao nao executa.")
+        texto = extrair_texto_ocr(caminho)
+    if not texto:
+        raise ValueError("PDF sem texto extraivel, mesmo apos OCR.")
     return texto
-
-
-def identificar_tipo(texto: str, nome_arquivo: str) -> str:
-    texto_busca = sem_acentos(f"{nome_arquivo}\n{texto}").lower()
-    for palavra, tipo in TIPOS_DOCUMENTO:
-        if sem_acentos(palavra).lower() in texto_busca:
-            return tipo
-    return TIPO_DESCONHECIDO
 
 
 def limpar_candidato(valor: str) -> str:
@@ -142,6 +141,21 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
     padroes = "|".join(re.escape(rotulo) for rotulo in ROTULOS_CLIENTE)
     candidatos = []
 
+    # Em tabelas de partes, o reu/requerido e a vitima sao o cliente, nao o autor.
+    for linha in linhas:
+        for rotulo in ROTULOS_PARTE_CLIENTE:
+            correspondencia = re.search(
+                rf"^(.+?)\s*\(\s*{re.escape(rotulo)}\s*\)$|^(.+?)\s+{re.escape(rotulo)}$",
+                linha,
+                re.IGNORECASE,
+            )
+            if correspondencia:
+                candidato = limpar_candidato(correspondencia.group(1) or correspondencia.group(2))
+                if candidato:
+                    candidatos.append(candidato)
+    if candidatos:
+        return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
+
     for linha in linhas:
         correspondencia = re.search(rf"(?:^|\b)(?:{padroes})\s*[:\-]\s*(.+)$", linha, re.IGNORECASE)
         if correspondencia:
@@ -153,12 +167,14 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
         return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
 
     texto_normalizado = re.sub(r"\s+", " ", texto).strip()
+    texto_sem_acentos = sem_acentos(texto_normalizado)
     padroes_juridicos = (
-        r"([A-ZÀ-Ú][A-ZÀ-Ú' -]{5,})\s*,?\s*já\s+qualificad\s*[oa]",
-        r"(?:em face de|em desfavor de|em nome de)\s+([A-ZÀ-Ú][A-ZÀ-Ú' -]{5,})",
+        r"([A-Z][A-Z' -]{5,})\s*,?\s*ja\s+qualificad\s*[oa]",
+        r"(?:^|\n)\s*([A-Z][A-Z' -]{5,})\s*,\s*(?:brasileir[oa]|solteir[oa]|casad[oa]|divorciad[oa]|vi[uú]v[oa]|nascid[oa])\b",
+        r"(?:^|\n)\s*([A-Z][A-Z' -]{5,})\s*,?\s*(?:outorgante|outorga)\b",
     )
     for padrao in padroes_juridicos:
-        correspondencia = re.search(padrao, texto_normalizado, re.IGNORECASE)
+        correspondencia = re.search(padrao, texto_sem_acentos, re.IGNORECASE)
         if correspondencia:
             candidato = limpar_candidato(correspondencia.group(1))
             if candidato:
@@ -173,11 +189,10 @@ def esta_protocolado(texto: str, nome_arquivo: str) -> bool:
     return any(marcador in conteudo for marcador in marcadores) or "assinado" in conteudo
 
 
-def identificar_documento(caminho: Path) -> tuple[str, str, bool]:
+def identificar_documento(caminho: Path) -> tuple[str, bool]:
     texto = extrair_texto_pdf(caminho)
     cliente = identificar_cliente(texto, caminho.name)
-    tipo = identificar_tipo(texto, caminho.name)
-    return cliente, tipo, esta_protocolado(texto, caminho.name)
+    return cliente, esta_protocolado(texto, caminho.name)
 
 
 def mover_com_retry(origem: Path, destino: Path) -> None:
@@ -237,7 +252,7 @@ def pasta_cliente_do_pdf(pdf: Path, pastas: dict[str, Path]) -> Path | None:
     clientes = pastas["clientes"]
     if clientes in pdf.parents:
         relativo = pdf.relative_to(clientes)
-        if len(relativo.parts) >= 2:
+        if len(relativo.parts) >= 1:
             return clientes / relativo.parts[0]
     return None
 
@@ -275,11 +290,11 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
 
     assinatura = encontrar_assinatura(caminho)
     try:
-        cliente, tipo, protocolado = identificar_documento(caminho)
-        destino = pastas["clientes"] / cliente / tipo / caminho.name
+        cliente, protocolado = identificar_documento(caminho)
+        destino = pastas["clientes"] / cliente / caminho.name
         mover_com_retry(caminho, destino)
         status = "Protocolado" if protocolado else "Nao protocolado"
-        log.info("%s | cliente=%s | tipo=%s | pdf=%s", status, cliente, tipo, destino)
+        log.info("%s | cliente=%s | pdf=%s", status, cliente, destino)
 
         if assinatura is not None and assinatura.exists():
             arquivar_assinatura(assinatura, destino, pastas)

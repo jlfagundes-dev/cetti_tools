@@ -7,3 +7,49 @@
 2026-09-15 15:17:54,033 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ASTROGILDO ESTANISLAU DA SILVA\Documentos Assinados\RequerimentoSonoqualityxAstrogildo.pdf.p7s
 2026-09-15 15:17:54,036 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
 2026-09-15 15:19:28,394 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-15 15:29:06,950 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-15 15:29:25,056 | INFO | Protocolado | cliente=ASTROGILDO ESTANISLAU DA SILVA | tipo=REQUERIMENTO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ASTROGILDO ESTANISLAU DA SILVA\REQUERIMENTO\Requerimento Sono quality x Astrogildo.pdf
+2026-09-15 15:29:25,058 | WARNING | Ja existe assinatura para o documento Requerimento Sono quality x Astrogildo.pdf. Arquivo existente: RequerimentoSonoqualityxAstrogildo.pdf.p7s. A duplicata RequerimentoSonoqualityxAstrogildo.pdf.p7s sera removida da entrada.
+[15:29:25] AVISO AO CLIENTE: Ja existe assinatura para o documento Requerimento Sono quality x Astrogildo.pdf. Arquivo existente: RequerimentoSonoqualityxAstrogildo.pdf.p7s. A duplicata RequerimentoSonoqualityxAstrogildo.pdf.p7s sera removida da entrada.
+2026-09-16 09:09:24,906 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
+2026-09-16 09:52:49,342 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:52:51,613 | INFO | Nao protocolado | cliente=ROMARIO FERREIRA DA SILVA | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Contestação Romário.pdf
+2026-09-16 09:52:51,690 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\ROMARIO FERREIRA DA SILVA\Documentos Assinados\ContestaçãoRomário.pdf.p7s
+2026-09-16 09:52:54,112 | INFO | Nao protocolado | cliente=JOAO BRAZ NETO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\impugnação à contestação João Braz.pdf
+2026-09-16 09:52:54,117 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\JOAO BRAZ NETO\Documentos Assinados\impugnaçãoàcontestaçãoJoãoBraz.pdf.p7s
+2026-09-16 09:52:56,122 | ERROR | Nao foi possivel processar Certidão filha Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:52:58,130 | ERROR | Nao foi possivel processar Decreto Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:00,135 | ERROR | Nao foi possivel processar 1-2 Adelson.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:02,144 | ERROR | Nao foi possivel processar Contrato de trabalho Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:04,155 | ERROR | Nao foi possivel processar CTPS fls 01 Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:06,176 | ERROR | Nao foi possivel processar Documentos, Adelson.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:10,189 | ERROR | Nao foi possivel processar Certidão filha Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:12,216 | ERROR | Nao foi possivel processar Decreto Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:14,233 | ERROR | Nao foi possivel processar Documentos, Adelson-compactado.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:16,251 | ERROR | Nao foi possivel processar Documentos, Adelson.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:18,260 | ERROR | Nao foi possivel processar Certidão filho Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:20,270 | ERROR | Nao foi possivel processar CTPS fls 02 Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:22,285 | ERROR | Nao foi possivel processar CTPS fls 01 Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:24,299 | ERROR | Nao foi possivel processar Comprovantes de Pagamento Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:26,319 | ERROR | Nao foi possivel processar Certidão filho Romario.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:30,471 | ERROR | Nao foi possivel processar Guia de Recolhimeento locomoção.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 09:53:32,589 | ERROR | Nao foi possivel processar Guia de Recolhimeento locomoção.pdf: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-09-16 10:01:57,621 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\1-2 Adelson.pdf
+2026-09-16 10:02:00,027 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Certidão filha Romario.pdf
+2026-09-16 10:02:00,033 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhaRomario.pdf.p7s
+2026-09-16 10:02:02,025 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Certidão filho Romario.pdf
+2026-09-16 10:02:02,033 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CertidãofilhoRomario.pdf.p7s
+2026-09-16 10:02:03,886 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Comprovantes de Pagamento Romario.pdf
+2026-09-16 10:02:05,485 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Contrato de trabalho Romario.pdf
+2026-09-16 10:02:06,464 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\CTPS fls 01 Romario.pdf
+2026-09-16 10:02:06,472 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\CTPSfls01Romario.pdf.p7s
+2026-09-16 10:02:07,484 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\CTPS fls 02 Romario.pdf
+2026-09-16 10:02:09,023 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Decreto Romario.pdf
+2026-09-16 10:02:09,029 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\DecretoRomario.pdf.p7s
+2026-09-16 10:02:19,849 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson-compactado.pdf
+2026-09-16 10:02:19,852 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson-compactado.pdf.p7s
+2026-09-16 10:02:28,386 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos, Adelson.pdf
+2026-09-16 10:02:28,395 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\Documentos,Adelson.pdf.p7s
+2026-09-16 10:02:30,943 | INFO | Nao protocolado | cliente=CLIENTE_NAO_IDENTIFICADO | pdf=C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Guia de Recolhimeento locomoção.pdf
+2026-09-16 10:02:31,004 | INFO | Assinatura arquivada em C:\Users\jlfag\OneDrive\Cetti_Organizador\CLIENTES\CLIENTE_NAO_IDENTIFICADO\Documentos Assinados\GuiadeRecolhimeentolocomoção.pdf.p7s
+2026-09-16 10:02:31,022 | INFO | Monitorando somente PDFs em C:\Users\jlfag\OneDrive\Cetti_Organizador\00_ENTRADA_AQUI
