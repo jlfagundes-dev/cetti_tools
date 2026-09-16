@@ -433,12 +433,20 @@ def resolver_pasta_cliente_existente(cliente: str, clientes_dir: Path) -> str:
     if not clientes_dir.exists():
         return cliente_normalizado
 
+    pastas_equivalentes = []
     for pasta in clientes_dir.iterdir():
         if not pasta.is_dir() or pasta.name.startswith("00_"):
             continue
-        chave_pasta = normalizar_busca_cliente(pasta.name).replace(" ", "")
+        nome_pasta_normalizado = nome_seguro(pasta.name, "")
+        chave_pasta = normalizar_busca_cliente(nome_pasta_normalizado).replace(" ", "")
         if chave_pasta == chave_cliente:
+            pastas_equivalentes.append(pasta)
+
+    for pasta in pastas_equivalentes:
+        if pasta.name == cliente_normalizado:
             return pasta.name
+    if pastas_equivalentes:
+        return sorted(pastas_equivalentes, key=lambda pasta: pasta.name.casefold())[0].name
     return cliente_normalizado
 
 
