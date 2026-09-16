@@ -57,6 +57,22 @@ ROTULOS_PARTE_CLIENTE = (
     "outorgante",
 )
 
+PALAVRAS_NOME_ARQUIVO = {
+    "acao",
+    "acordo",
+    "autos",
+    "certidao",
+    "comprovante",
+    "contestacao",
+    "contrato",
+    "decisao",
+    "documento",
+    "peticao",
+    "processo",
+    "requerimento",
+    "sentenca",
+}
+
 PALAVRAS_IGNORADAS = {
     "cliente",
     "requerente",
@@ -138,6 +154,16 @@ def limpar_candidato(valor: str) -> str:
     return valor
 
 
+def candidato_citado_no_nome_arquivo(candidato: str, nome_arquivo: str) -> bool:
+    tokens_candidato = set(normalizar_busca_cliente(candidato).split())
+    tokens_arquivo = {
+        token
+        for token in normalizar_busca_cliente(Path(nome_arquivo).stem).split()
+        if token not in PALAVRAS_NOME_ARQUIVO and len(token) >= 3
+    }
+    return bool(tokens_candidato & tokens_arquivo)
+
+
 def identificar_cliente(texto: str, nome_arquivo: str) -> str:
     linhas = [re.sub(r"\s+", " ", linha).strip() for linha in texto.splitlines()]
     padroes = "|".join(re.escape(rotulo) for rotulo in ROTULOS_CLIENTE)
@@ -155,8 +181,16 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
                 candidato = limpar_candidato(correspondencia.group(1) or correspondencia.group(2))
                 if candidato:
                     candidatos.append(candidato)
-    if candidatos:
-        return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
+
+        correspondencia = re.search(
+            r"\bparte\s+(?:re|ré|autora?|requerida?)\s*[:\-]\s*(.+)$",
+            linha,
+            re.IGNORECASE,
+        )
+        if correspondencia:
+            candidato = limpar_candidato(correspondencia.group(1))
+            if candidato:
+                candidatos.append(candidato)
 
     for linha in linhas:
         correspondencia = re.search(rf"(?:^|\b)(?:{padroes})\s*[:\-]\s*(.+)$", linha, re.IGNORECASE)
@@ -164,9 +198,6 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
             candidato = limpar_candidato(correspondencia.group(1))
             if candidato:
                 candidatos.append(candidato)
-
-    if candidatos:
-        return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
 
     texto_normalizado = re.sub(r"\s+", " ", texto).strip()
     texto_sem_acentos = sem_acentos(texto_normalizado)
@@ -180,7 +211,14 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
         if correspondencia:
             candidato = limpar_candidato(correspondencia.group(1))
             if candidato:
-                return nome_seguro(candidato, CLIENTE_DESCONHECIDO)
+                candidatos.append(candidato)
+
+    for candidato in candidatos:
+        if candidato_citado_no_nome_arquivo(candidato, nome_arquivo):
+            return nome_seguro(candidato, CLIENTE_DESCONHECIDO)
+
+    if candidatos:
+        return nome_seguro(candidatos[0], CLIENTE_DESCONHECIDO)
 
     return CLIENTE_DESCONHECIDO
 
