@@ -21,25 +21,17 @@ O instalador:
 
 - cria o ambiente virtual `.venv`;
 - instala as dependências;
-- cria o `.env` com o caminho do OneDrive, se ele ainda não existir;
+- cria o `.env`, se ele ainda não existir;
 - registra a tarefa `ArquivistaDigitalCettiLocal` no Agendador de Tarefas do Windows;
 - configura o início automático no logon.
 
 Se o Python não estiver instalado, o instalador tenta instalar o Python 3.13 automaticamente usando o `winget`. Caso o computador não tenha `winget`, instale o Python pelo site oficial e execute o instalador novamente.
 
-Quando solicitado, informe a pasta raiz do OneDrive. Exemplo:
-
-```text
-C:\Users\usuario\OneDrive\Cetti_Organizador
-```
+Os arquivos são processados diretamente na pasta `Documentos` da biblioteca do Windows. O sistema cria nela as pastas `01_CLIENTES` e `00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE`.
 
 ## 3. Configurar variáveis
 
-Edite o arquivo `.env` com pelo menos:
-
-- `CAMINHO_RAIZ_DRIVE`
-
-O arquivista PDF local não precisa de `GEMINI_API_KEY` nem de `ADVOGADO_PADRAO`.
+O arquivista PDF local não precisa de `CAMINHO_RAIZ_DRIVE`, `GEMINI_API_KEY` nem de `ADVOGADO_PADRAO`.
 
 Opcional para comportamento remoto por domínio público:
 

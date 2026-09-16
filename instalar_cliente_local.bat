@@ -73,13 +73,10 @@ if errorlevel 1 goto :erro
 if errorlevel 1 goto :erro
 
 if not exist ".env" (
-    echo.
-    set /p CAMINHO_RAIZ=Informe o caminho da pasta raiz do OneDrive [C:\Users\%USERNAME%\OneDrive\Cetti_Organizador]: 
-    if "!CAMINHO_RAIZ!"=="" set "CAMINHO_RAIZ=C:\Users\%USERNAME%\OneDrive\Cetti_Organizador"
-    >.env echo CAMINHO_RAIZ_DRIVE=!CAMINHO_RAIZ!
+    >.env echo REM A pasta Documentos do Windows sera usada automaticamente.
     echo Arquivo .env criado.
 ) else (
-    echo Arquivo .env ja existe. O caminho configurado sera preservado.
+    echo Arquivo .env ja existe. A pasta Documentos do Windows sera usada automaticamente.
 )
 
 if not exist "%START_SCRIPT%" (

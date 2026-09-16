@@ -2,6 +2,7 @@ import os
 import unicodedata
 import subprocess
 import sys
+import ctypes
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -10,16 +11,26 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def obter_raiz() -> Path | None:
-    caminho_raiz = os.getenv("CAMINHO_RAIZ_DRIVE", "").strip()
-    if not caminho_raiz:
-        return None
-    return Path(caminho_raiz).expanduser()
+    """Retorna a pasta Documentos do usuário, inclusive no Windows localizado."""
+    if os.name == "nt":
+        caminho = ctypes.create_unicode_buffer(260)
+        resultado = ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, caminho)
+        if resultado == 0 and caminho.value:
+            return Path(caminho.value)
+
+    for nome in ("Documents", "Documentos"):
+        caminho = Path.home() / nome
+        if caminho.exists():
+            return caminho
+    return Path.home() / "Documents"
 
 
 def garantir_estrutura(raiz: Path) -> dict[str, Path]:
     return {
-        "entrada": raiz / "00_ENTRADA_AQUI",
-        "clientes": raiz / "CLIENTES",
+        "entrada": raiz,
+        "clientes": raiz / "01_CLIENTES",
+        "clientes_antigos": raiz / "CLIENTES",
+        "nao_identificados": raiz / "00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE",
         # Mantidos para compatibilidade com a versão anterior baseada em status.
         "nao_protocolado": raiz / "01_Nao_Protocolado",
         "protocolado": raiz / "02_Protocolado",

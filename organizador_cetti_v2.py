@@ -81,7 +81,7 @@ RAIZ = obter_raiz()
 ADVOGADO_PADRAO = os.getenv("ADVOGADO_PADRAO", "DESCONHECIDO").strip() or "DESCONHECIDO"
 
 if RAIZ is None:
-    raise SystemExit("ERRO: defina CAMINHO_RAIZ_DRIVE no arquivo .env")
+    raise SystemExit("ERRO: a pasta Documentos do Windows nao foi localizada")
 
 pastas = garantir_estrutura(RAIZ)
 ENTRADA = pastas["entrada"]

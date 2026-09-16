@@ -152,7 +152,7 @@ echo Tarefa agendada: %TASK_NAME%
 echo Inicializacao automatica: tarefa agendada ou atalho na pasta Startup
 echo.
 echo Proximos passos:
-echo   1. Preencha o arquivo .env com GEMINI_API_KEY e CAMINHO_RAIZ_DRIVE.
+echo   1. A pasta Documentos do Windows sera usada automaticamente.
 echo   2. Execute o atalho executar_organizador_cetti_streamlit.bat para testar.
 echo   3. Acesse o app pelo hostname do Cloudflare no celular.
 echo.

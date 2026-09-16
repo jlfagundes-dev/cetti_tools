@@ -15,11 +15,11 @@ Ele atua como um arquivista digital: monitora o Google Drive em tempo real, lê 
 
 ## Fluxo
 
-1. O usuário salva documentos na pasta `00_ENTRADA_AQUI` do Google Drive sincronizado.
+1. O usuário salva documentos diretamente na biblioteca `Documentos` do Windows.
 2. O worker escolhido lê o texto do PDF localmente e usa regras determinísticas para decidir cliente e status.
-3. O PDF é movido imediatamente para `CLIENTES/<cliente>`.
-4. Um arquivo `.p7s`, `.p7m` ou `.sig` é associado pelo mesmo nome-base do PDF e movido para `CLIENTES/<cliente>/Documentos Assinados`.
-5. Se a assinatura chegar antes do PDF, ela permanece na entrada até o PDF correspondente aparecer. Se já existir uma assinatura, o sistema não sobrescreve e publica um aviso ao cliente.
+3. O PDF é movido imediatamente para `Documentos/01_CLIENTES/<cliente>`.
+4. Um arquivo `.p7s`, `.p7m` ou `.sig` é associado pelo mesmo nome-base do PDF e movido para `Documentos/01_CLIENTES/<cliente>/Documentos Assinados`.
+5. Se a assinatura chegar antes do PDF, ela permanece em `Documentos` até o PDF correspondente aparecer. Arquivos sem cliente vão para `Documentos/00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE`.
 6. O Streamlit mostra o estado do monitor, os logs, os avisos e as pastas acompanhadas.
 7. O Cloudflare Tunnel pode publicar esse painel para acompanhamento remoto.
 

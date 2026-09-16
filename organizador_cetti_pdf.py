@@ -253,9 +253,13 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
 def processar_pendentes(pastas: dict[str, Path]) -> None:
     """Move pendentes somente quando o documento externo corresponde a cliente cadastrado."""
     entrada = pastas["entrada"]
-    if any(caminho.is_file() for caminho in entrada.iterdir()):
+    if any(
+        caminho.is_file()
+        and caminho.suffix.lower() in (EXTENSAO_PERMITIDA, *EXTENSOES_ASSINATURA)
+        for caminho in entrada.iterdir()
+    ):
         return
-    pendentes = pastas["clientes"] / CLIENTE_DESCONHECIDO
+    pendentes = pastas["nao_identificados"]
     if not pendentes.exists():
         return
     for caminho in sorted(pendentes.glob("*.pdf")):
@@ -317,6 +321,8 @@ def notificar_cliente(mensagem: str) -> None:
 
 def pasta_cliente_do_pdf(pdf: Path, pastas: dict[str, Path]) -> Path | None:
     clientes = pastas["clientes"]
+    if pdf.parent == pastas["nao_identificados"]:
+        return pastas["nao_identificados"]
     if clientes in pdf.parents:
         relativo = pdf.relative_to(clientes)
         if len(relativo.parts) >= 1:
@@ -331,7 +337,11 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
         return
 
     # A pasta de nao identificados mantem PDFs e assinaturas diretamente no mesmo nivel.
-    pasta_assinados = pasta_cliente if pasta_cliente.name == CLIENTE_DESCONHECIDO else pasta_cliente / "Documentos Assinados"
+    pasta_assinados = (
+        pasta_cliente
+        if pasta_cliente == pastas["nao_identificados"]
+        else pasta_cliente / "Documentos Assinados"
+    )
     assinaturas_existentes = [
         caminho for caminho in pasta_assinados.glob("*")
         if caminho.is_file()
@@ -353,22 +363,54 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
 
 
 def achatar_pasta_nao_identificados(pastas: dict[str, Path]) -> None:
-    """Move arquivos de subpastas antigas para a raiz de nao identificados."""
-    pasta_pendentes = pastas["clientes"] / CLIENTE_DESCONHECIDO
-    if not pasta_pendentes.exists():
+    """Migra a pasta antiga de desconhecidos para o novo nivel da biblioteca."""
+    pasta_antiga = pastas["clientes"] / CLIENTE_DESCONHECIDO
+    pasta_nova = pastas["nao_identificados"]
+    if not pasta_antiga.exists():
         return
-    for subpasta in list(pasta_pendentes.iterdir()):
-        if not subpasta.is_dir():
+    pasta_nova.mkdir(parents=True, exist_ok=True)
+    for item in sorted(pasta_antiga.rglob("*")):
+        if not item.is_file():
             continue
-        for item in subpasta.iterdir():
-            destino = pasta_pendentes / item.name
-            if destino.exists():
-                destino = pasta_pendentes / f"{item.stem}_duplicado{item.suffix}"
-            mover_com_retry(item, destino)
-        try:
-            subpasta.rmdir()
-        except OSError:
-            log.warning("Nao foi possivel remover a subpasta antiga: %s", subpasta)
+        destino = pasta_nova / item.name
+        if destino.exists():
+            destino = pasta_nova / f"{item.stem}_duplicado{item.suffix}"
+        mover_com_retry(item, destino)
+    for diretorio in sorted(pasta_antiga.rglob("*"), reverse=True):
+        if diretorio.is_dir():
+            try:
+                diretorio.rmdir()
+            except OSError:
+                pass
+    try:
+        pasta_antiga.rmdir()
+    except OSError:
+        log.warning("Nao foi possivel remover a pasta antiga: %s", pasta_antiga)
+
+
+def migrar_pasta_clientes_antiga(pastas: dict[str, Path]) -> None:
+    """Move clientes da pasta CLIENTES antiga para 01_CLIENTES."""
+    pasta_antiga = pastas["clientes_antigos"]
+    pasta_nova = pastas["clientes"]
+    if not pasta_antiga.exists() or pasta_antiga == pasta_nova:
+        return
+
+    pasta_nova.mkdir(parents=True, exist_ok=True)
+    for item in sorted(pasta_antiga.iterdir()):
+        destino = pasta_nova / item.name
+        if destino.exists():
+            if item.is_dir() and destino.is_dir():
+                for arquivo in item.rglob("*"):
+                    if arquivo.is_file():
+                        destino_arquivo = destino / arquivo.relative_to(item)
+                        mover_com_retry(arquivo, destino_arquivo)
+                continue
+            destino = pasta_nova / f"{item.stem}_duplicado{item.suffix}"
+        mover_com_retry(item, destino)
+    try:
+        pasta_antiga.rmdir()
+    except OSError:
+        log.warning("Nao foi possivel remover a pasta antiga: %s", pasta_antiga)
 
 
 def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
@@ -378,7 +420,12 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     assinatura = encontrar_assinatura(caminho)
     try:
         cliente, protocolado = identificar_documento(caminho)
-        destino = pastas["clientes"] / cliente / caminho.name
+        pasta_destino = (
+            pastas["nao_identificados"]
+            if cliente == CLIENTE_DESCONHECIDO
+            else pastas["clientes"] / cliente
+        )
+        destino = pasta_destino / caminho.name
         mover_com_retry(caminho, destino)
         status = "Protocolado" if protocolado else "Nao protocolado"
         log.info("%s | cliente=%s | pdf=%s", status, cliente, destino)
@@ -437,18 +484,20 @@ def processar_existentes(pastas: dict[str, Path]) -> None:
         processar_pdf(caminho, pastas)
     for caminho in sorted(entrada.iterdir()):
         if caminho.is_file() and caminho.suffix.lower() in EXTENSOES_ASSINATURA:
-            processar_assinatura(caminho, pastas, entrada.parent)
+            processar_assinatura(caminho, pastas, entrada)
     processar_pendentes(pastas)
 
 
 def executar() -> None:
     raiz = obter_raiz()
     if raiz is None:
-        raise SystemExit("ERRO: defina CAMINHO_RAIZ_DRIVE no arquivo .env")
+        raise SystemExit("ERRO: a pasta Documentos do Windows nao foi localizada")
 
     pastas = garantir_estrutura(raiz)
     pastas["entrada"].mkdir(parents=True, exist_ok=True)
     pastas["clientes"].mkdir(parents=True, exist_ok=True)
+    pastas["nao_identificados"].mkdir(parents=True, exist_ok=True)
+    migrar_pasta_clientes_antiga(pastas)
     achatar_pasta_nao_identificados(pastas)
     processar_existentes(pastas)
 

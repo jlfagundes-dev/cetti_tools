@@ -72,8 +72,8 @@ def status_monitor() -> tuple[str, str]:
 def resumo_operacional(raiz: Path | None) -> tuple[int, int, int]:
     if raiz is None or not raiz.exists():
         return 0, 0, 0
-    entrada = raiz / "00_ENTRADA_AQUI"
-    clientes = raiz / "CLIENTES"
+    entrada = raiz
+    clientes = raiz / "01_CLIENTES"
     return (
         sum(1 for caminho in entrada.iterdir() if caminho.is_file()) if entrada.exists() else 0,
         sum(1 for caminho in clientes.rglob("*") if caminho.is_file()) if clientes.exists() else 0,
@@ -128,7 +128,7 @@ entrada_count, documentos_clientes_count, clientes_count = resumo_operacional(ra
 st.sidebar.title("Arquivista Digital Cetti v3")
 st.sidebar.caption("Painel operacional do processamento local de PDFs.")
 if raiz is None:
-    st.sidebar.error("CAMINHO_RAIZ_DRIVE não configurado")
+    st.sidebar.error("Pasta Documentos do Windows não localizada")
 else:
     st.sidebar.success("Base conectada")
     st.sidebar.caption(str(raiz))
