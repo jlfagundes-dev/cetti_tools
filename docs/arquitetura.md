@@ -20,8 +20,9 @@ Ele atua como um arquivista digital: monitora o Google Drive em tempo real, lê 
 3. O PDF é movido imediatamente para `Documentos/01_CLIENTES/<cliente>`.
 4. Um arquivo `.p7s`, `.p7m` ou `.sig` é associado pelo mesmo nome-base do PDF e movido para `Documentos/01_CLIENTES/<cliente>/Documentos Assinados`.
 5. Se a assinatura chegar antes do PDF, ela permanece em `Documentos` até o PDF correspondente aparecer. Arquivos sem cliente vão para `Documentos/00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE`.
-6. O Streamlit mostra o estado do monitor, os logs, os avisos e as pastas acompanhadas.
-7. O Cloudflare Tunnel pode publicar esse painel para acompanhamento remoto.
+6. A classificação de PDFs considera somente arquivos cuja data de modificação seja do dia anterior; arquivos recebidos hoje aguardam na entrada até a virada do dia.
+7. O Streamlit mostra o estado do monitor, os logs, os avisos e as pastas acompanhadas.
+8. O Cloudflare Tunnel pode publicar esse painel para acompanhamento remoto.
 
 ## Premissas
 

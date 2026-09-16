@@ -4,6 +4,7 @@ import re
 import shutil
 import time
 import unicodedata
+from datetime import date, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -107,6 +108,15 @@ PALAVRAS_DE_FRASE = {
     "peticao",
     "documento",
 }
+
+
+def arquivo_do_dia_anterior(caminho: Path, hoje: date | None = None) -> bool:
+    """Permite classificar somente PDFs modificados no dia anterior."""
+    try:
+        data_referencia = hoje or date.today()
+        return date.fromtimestamp(caminho.stat().st_mtime) == data_referencia - timedelta(days=1)
+    except OSError:
+        return False
 
 
 def sem_acentos(texto: str) -> str:
@@ -339,6 +349,9 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
     if not pendentes.exists():
         return
     for caminho in sorted(pendentes.glob("*.pdf")):
+        if not arquivo_do_dia_anterior(caminho):
+            log.debug("Documento externo aguardando o dia seguinte para reavaliacao: %s", caminho.name)
+            continue
         try:
             texto = extrair_texto_pdf(caminho)
             cliente = buscar_cliente_externo(texto, caminho.name, pastas["clientes"])
@@ -516,6 +529,9 @@ def migrar_pasta_clientes_antiga(pastas: dict[str, Path]) -> None:
 def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     if caminho.suffix.lower() != EXTENSAO_PERMITIDA or not caminho.is_file():
         return
+    if not arquivo_do_dia_anterior(caminho):
+        log.debug("PDF aguardando o dia seguinte para classificacao: %s", caminho.name)
+        return
 
     assinatura = encontrar_assinatura(caminho)
     try:
@@ -618,8 +634,13 @@ def executar() -> None:
     log.info("Monitorando somente PDFs em %s", pastas["entrada"])
 
     try:
+        ultimo_dia = date.today()
         while True:
             time.sleep(1)
+            hoje = date.today()
+            if hoje != ultimo_dia:
+                ultimo_dia = hoje
+                processar_existentes(pastas)
     except KeyboardInterrupt:
         observador.stop()
     observador.join()
