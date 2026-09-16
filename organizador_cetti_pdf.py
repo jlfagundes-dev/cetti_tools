@@ -58,6 +58,10 @@ ROTULOS_PARTE_CLIENTE = (
     "outorgante",
 )
 
+PREFIXOS_DOCUMENTO = (
+    "declaracao de hipossuficiencia economica",
+)
+
 PALAVRAS_NOME_ARQUIVO = {
     "acao",
     "acordo",
@@ -175,6 +179,13 @@ def extrair_texto_pdf(caminho: Path) -> str:
 
 
 def limpar_candidato(valor: str) -> str:
+    for prefixo in PREFIXOS_DOCUMENTO:
+        valor = re.sub(
+            rf"^\s*{re.escape(prefixo)}\s*[-:,.]?\s*",
+            "",
+            sem_acentos(valor),
+            flags=re.IGNORECASE,
+        )
     valor = re.sub(r"\s+", " ", valor).strip(" .,:;-|")
     valor = re.sub(r"\b(?:cpf|rg|cnpj)\s*[:.\-]?\s*[0-9./-]+", "", valor, flags=re.IGNORECASE)
     palavras = [palavra for palavra in valor.split() if palavra.lower() not in PALAVRAS_IGNORADAS]
