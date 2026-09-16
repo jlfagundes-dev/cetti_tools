@@ -95,9 +95,11 @@ PALAVRAS_IGNORADAS = {
 
 PALAVRAS_DE_FRASE = {
     "alem",
+    "causa",
     "disso",
     "esclareceu",
     "esclarece",
+    "justa",
     "testemunha",
     "conforme",
     "declarou",
@@ -188,13 +190,17 @@ def limpar_candidato(valor: str) -> str:
 
 
 def candidato_citado_no_nome_arquivo(candidato: str, nome_arquivo: str) -> bool:
-    tokens_candidato = set(normalizar_busca_cliente(candidato).split())
+    tokens_candidato = [
+        token
+        for token in normalizar_busca_cliente(candidato).split()
+        if token not in PALAVRAS_NOME_ARQUIVO and len(token) >= 3
+    ]
     tokens_arquivo = {
         token
         for token in normalizar_busca_cliente(Path(nome_arquivo).stem).split()
         if token not in PALAVRAS_NOME_ARQUIVO and len(token) >= 3
     }
-    return bool(tokens_candidato & tokens_arquivo)
+    return bool(tokens_candidato) and tokens_candidato[0] in tokens_arquivo
 
 
 def identificar_cliente(texto: str, nome_arquivo: str) -> str:
