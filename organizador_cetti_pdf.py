@@ -252,22 +252,35 @@ def normalizar_busca_cliente(texto: str) -> str:
 
 def extrair_nomes_externos(texto: str) -> list[str]:
     """Extrai nomes de campos externos, inclusive quando o valor esta na linha seguinte."""
+    return [candidato for _, candidato in extrair_campos_externos(texto)]
+
+
+def extrair_campos_externos(texto: str) -> list[tuple[str, str]]:
+    """Extrai o rotulo e o nome dos campos de documentos externos."""
     linhas = [re.sub(r"\s+", " ", linha).strip() for linha in texto.splitlines()]
     rotulos = "|".join(re.escape(rotulo) for rotulo in ROTULOS_DOCUMENTO_EXTERNO)
     candidatos = []
     for indice, linha in enumerate(linhas):
-        correspondencia = re.search(rf"(?:^|\b)(?:{rotulos})\s*[:.\-]?\s*(.+)$", linha, re.IGNORECASE)
+        correspondencia = re.search(
+            rf"(?:^|\b)({rotulos})\s*[:.\-]?\s*(.+)$", linha, re.IGNORECASE
+        )
         if correspondencia:
-            candidatos.append(correspondencia.group(1))
+            candidatos.append((correspondencia.group(1).lower(), correspondencia.group(2)))
         elif re.fullmatch(rf"(?:{rotulos})\s*[:.\-]?", linha, re.IGNORECASE) and indice + 1 < len(linhas):
-            candidatos.append(linhas[indice + 1])
-    return [normalizar_busca_cliente(candidato) for candidato in candidatos if candidato]
+            rotulo = re.match(rf"({rotulos})", linha, re.IGNORECASE)
+            if rotulo:
+                candidatos.append((rotulo.group(1).lower(), linhas[indice + 1]))
+    return [
+        (rotulo, normalizar_busca_cliente(candidato))
+        for rotulo, candidato in candidatos
+        if candidato
+    ]
 
 
 def buscar_cliente_externo(texto: str, nome_arquivo: str, clientes_dir: Path) -> str:
     """Procura um cliente ja cadastrado sem criar pasta durante o fluxo externo."""
     conteudo = normalizar_busca_cliente(f"{nome_arquivo}\n{texto}")
-    candidatos = extrair_nomes_externos(texto) + [conteudo]
+    candidatos = extrair_campos_externos(texto) + [("", conteudo)]
     melhor_cliente = ""
     melhor_pontuacao = 0
     for pasta in clientes_dir.iterdir():
@@ -275,10 +288,12 @@ def buscar_cliente_externo(texto: str, nome_arquivo: str, clientes_dir: Path) ->
             continue
         nome = normalizar_busca_cliente(pasta.name)
         tokens = [token for token in nome.split() if len(token) > 2]
-        pontuacao = max(
-            sum(token in candidato.split() for token in tokens)
-            for candidato in candidatos
-        ) if tokens else 0
+        pontuacao = 0
+        for rotulo, candidato in candidatos:
+            correspondencia = sum(token in candidato.split() for token in tokens)
+            if rotulo == "pagador":
+                correspondencia += 1000
+            pontuacao = max(pontuacao, correspondencia)
         if nome and nome in conteudo:
             pontuacao += 100
         if pontuacao > melhor_pontuacao:
