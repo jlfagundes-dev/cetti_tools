@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import shutil
+import ctypes
 import threading
 import time
 import unicodedata
@@ -36,6 +37,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("cetti_pdf")
 TRAVA_REAVALIACAO = threading.Lock()
+NOME_MUTEX_MONITOR = "Global\\ArquivistaDigitalCettiPdfMonitor"
 
 
 ROTULOS_CLIENTE = (
@@ -383,6 +385,24 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
             time.sleep(5)
 
 
+def garantir_clientes_disponivel(pastas: dict[str, Path], tentativas: int = 12, intervalo: float = 5.0) -> bool:
+    """Garante que a estrutura oficial de clientes esteja acessivel antes de uma rodada."""
+    clientes = pastas["clientes"]
+    for tentativa in range(1, tentativas + 1):
+        try:
+            clientes.mkdir(parents=True, exist_ok=True)
+            if clientes.is_dir():
+                return True
+        except OSError as erro:
+            if tentativa == 1:
+                log.warning("Pasta 01_CLIENTES indisponivel; aguardando para tentar novamente: %s", erro)
+        if tentativa < tentativas:
+            time.sleep(intervalo)
+
+    log.error("Rodada interrompida: pasta 01_CLIENTES continua indisponivel: %s", clientes)
+    return False
+
+
 def processar_pendentes(pastas: dict[str, Path]) -> None:
     """Executa uma unica reavaliacao por vez."""
     if not TRAVA_REAVALIACAO.acquire(blocking=False):
@@ -396,6 +416,8 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
 
 def _processar_pendentes(pastas: dict[str, Path]) -> None:
     """Move pendentes somente quando o documento externo corresponde a cliente cadastrado."""
+    if not garantir_clientes_disponivel(pastas):
+        return
     entrada = pastas["entrada"]
     if any(
         caminho.is_file()
@@ -668,9 +690,13 @@ class Handler(FileSystemEventHandler):
 
     def _reavaliar_se_ociosa(self) -> None:
         with self._processamento_lock:
+            if not garantir_clientes_disponivel(self.pastas):
+                return
             processar_pendentes(self.pastas)
 
     def on_created(self, event):
+        if not garantir_clientes_disponivel(self.pastas):
+            return
         with self._processamento_lock:
             self._processar_evento(event)
         self._agendar_reavaliacao_ociosa()
@@ -691,6 +717,8 @@ class Handler(FileSystemEventHandler):
 
 
 def processar_existentes(pastas: dict[str, Path]) -> None:
+    if not garantir_clientes_disponivel(pastas):
+        return
     entrada = pastas["entrada"]
     for caminho in sorted(entrada.iterdir()):
         if caminho.is_file() and caminho.suffix.lower() in EXTENSOES_WORD:
@@ -703,7 +731,54 @@ def processar_existentes(pastas: dict[str, Path]) -> None:
     processar_pendentes(pastas)
 
 
+class InstanciaUnicaMonitor:
+    def __init__(self):
+        self.handle = None
+        self.arquivo_lock = None
+
+    def adquirir(self) -> bool:
+        if os.name == "nt":
+            self.handle = ctypes.windll.kernel32.CreateMutexW(None, False, NOME_MUTEX_MONITOR)
+            if not self.handle:
+                raise OSError("Nao foi possivel criar o mutex do monitor")
+            if ctypes.windll.kernel32.GetLastError() == 183:
+                ctypes.windll.kernel32.CloseHandle(self.handle)
+                self.handle = None
+                return False
+            return True
+
+        self.arquivo_lock = Path(__file__).with_suffix(".monitor.lock")
+        try:
+            descritor = os.open(self.arquivo_lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.close(descritor)
+        except FileExistsError:
+            return False
+        return True
+
+    def liberar(self) -> None:
+        if self.handle is not None:
+            ctypes.windll.kernel32.CloseHandle(self.handle)
+            self.handle = None
+        if self.arquivo_lock is not None:
+            try:
+                self.arquivo_lock.unlink()
+            except FileNotFoundError:
+                pass
+            self.arquivo_lock = None
+
+
 def executar() -> None:
+    instancia = InstanciaUnicaMonitor()
+    if not instancia.adquirir():
+        log.error("Monitor ja esta em execucao; esta instancia sera encerrada.")
+        return
+    try:
+        _executar_monitor()
+    finally:
+        instancia.liberar()
+
+
+def _executar_monitor() -> None:
     raiz = obter_raiz()
     if raiz is None:
         raise SystemExit("ERRO: a pasta Documentos do Windows nao foi localizada")
