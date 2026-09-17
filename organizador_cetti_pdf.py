@@ -71,8 +71,12 @@ ROTULOS_CLIENTE = (
 )
 
 ROTULOS_PARTE_CLIENTE = (
+    "autor",
+    "autora",
+    "requerente",
     "reu",
     "réu",
+    "re",
     "requerido",
     "requerida",
     "vitima",
@@ -253,7 +257,8 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
     padroes = "|".join(re.escape(rotulo) for rotulo in ROTULOS_CLIENTE)
     candidatos = []
 
-    # Em tabelas de partes, o reu/requerido e a vitima sao o cliente, nao o autor.
+    # As partes podem aparecer como autor/requerente ou reu/requerido; o nome
+    # do arquivo decide qual delas e o cliente quando houver mais de uma.
     for linha in linhas:
         for rotulo in ROTULOS_PARTE_CLIENTE:
             correspondencia = re.search(
@@ -263,6 +268,16 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
             )
             if correspondencia:
                 candidato = limpar_candidato(correspondencia.group(1) or correspondencia.group(2))
+                if candidato:
+                    candidatos.append(candidato)
+
+            correspondencia = re.search(
+                rf"^{re.escape(rotulo)}\s*[:\-]\s*(.+)$",
+                linha,
+                re.IGNORECASE,
+            )
+            if correspondencia:
+                candidato = limpar_candidato(correspondencia.group(1))
                 if candidato:
                     candidatos.append(candidato)
 
