@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import shutil
+import threading
 import time
 import unicodedata
 from datetime import date, timedelta
@@ -34,6 +35,7 @@ logging.basicConfig(
     ],
 )
 log = logging.getLogger("cetti_pdf")
+TRAVA_REAVALIACAO = threading.Lock()
 
 
 ROTULOS_CLIENTE = (
@@ -382,6 +384,17 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
 
 
 def processar_pendentes(pastas: dict[str, Path]) -> None:
+    """Executa uma unica reavaliacao por vez."""
+    if not TRAVA_REAVALIACAO.acquire(blocking=False):
+        log.debug("Reavaliacao de documentos externos ja esta em andamento.")
+        return
+    try:
+        _processar_pendentes(pastas)
+    finally:
+        TRAVA_REAVALIACAO.release()
+
+
+def _processar_pendentes(pastas: dict[str, Path]) -> None:
     """Move pendentes somente quando o documento externo corresponde a cliente cadastrado."""
     entrada = pastas["entrada"]
     if any(
@@ -394,6 +407,9 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
     if not pendentes.exists():
         return
     for caminho in sorted(pendentes.glob("*.pdf")):
+        if not caminho.exists():
+            log.info("Documento externo ja foi movido por outra rotina: %s", caminho.name)
+            continue
         if not arquivo_anterior_de_hoje(caminho):
             log.debug("Documento externo aguardando o dia seguinte para reavaliacao: %s", caminho.name)
             continue
@@ -405,10 +421,15 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
             assinatura = encontrar_assinatura(caminho)
             cliente = resolver_pasta_cliente_existente(cliente, pastas["clientes"])
             destino = pastas["clientes"] / cliente / caminho.name
+            if not caminho.exists():
+                log.info("Documento externo ja foi movido antes da transferencia: %s", caminho.name)
+                continue
             mover_com_retry(caminho, destino)
             if assinatura is not None and assinatura.exists():
                 arquivar_assinatura(assinatura, destino, pastas)
             log.info("Documento externo identificado | cliente=%s | pdf=%s", cliente, caminho.name)
+        except FileNotFoundError:
+            log.info("Documento externo ja foi movido durante a reavaliacao: %s", caminho.name)
         except Exception as erro:
             log.error("Nao foi possivel reavaliar %s: %s", caminho.name, erro)
 
@@ -633,12 +654,30 @@ class Handler(FileSystemEventHandler):
     def __init__(self, pastas: dict[str, Path], raiz: Path):
         self.pastas = pastas
         self.raiz = raiz
+        self._processamento_lock = threading.Lock()
+        self._timer_lock = threading.Lock()
+        self._pendentes_timer = None
+
+    def _agendar_reavaliacao_ociosa(self) -> None:
+        with self._timer_lock:
+            if self._pendentes_timer is not None:
+                self._pendentes_timer.cancel()
+            self._pendentes_timer = threading.Timer(5, self._reavaliar_se_ociosa)
+            self._pendentes_timer.daemon = True
+            self._pendentes_timer.start()
+
+    def _reavaliar_se_ociosa(self) -> None:
+        with self._processamento_lock:
+            processar_pendentes(self.pastas)
 
     def on_created(self, event):
+        with self._processamento_lock:
+            self._processar_evento(event)
+        self._agendar_reavaliacao_ociosa()
+
+    def _processar_evento(self, event):
         caminho = Path(event.src_path)
         if event.is_directory:
-            if caminho.parent == self.pastas["clientes"]:
-                processar_pendentes(self.pastas)
             return
         if caminho.suffix.lower() in EXTENSOES_WORD and caminho.parent == self.pastas["entrada"]:
             time.sleep(2)
@@ -646,13 +685,9 @@ class Handler(FileSystemEventHandler):
         elif caminho.suffix.lower() == EXTENSAO_PERMITIDA:
             time.sleep(2)
             processar_pdf(caminho, self.pastas)
-            # Depois de concluir o PDF da entrada, tenta os documentos externos se a entrada esvaziou.
-            processar_pendentes(self.pastas)
         elif caminho.suffix.lower() in EXTENSOES_ASSINATURA:
             time.sleep(2)
             processar_assinatura(caminho, self.pastas, self.raiz)
-            # Depois de concluir a assinatura da entrada, tenta os documentos externos se a entrada esvaziou.
-            processar_pendentes(self.pastas)
 
 
 def processar_existentes(pastas: dict[str, Path]) -> None:
