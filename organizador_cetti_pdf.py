@@ -6,7 +6,7 @@ import ctypes
 import threading
 import time
 import unicodedata
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -143,10 +143,10 @@ PALAVRAS_DE_FRASE = {
 
 
 def arquivo_anterior_de_hoje(caminho: Path, hoje: date | None = None) -> bool:
-    """Permite classificar somente PDFs modificados no dia anterior pra tras."""
+    """Permite processar arquivos modificados antes da data de hoje."""
     try:
         data_referencia = hoje or date.today()
-        return date.fromtimestamp(caminho.stat().st_mtime) < data_referencia - timedelta(days=1)
+        return date.fromtimestamp(caminho.stat().st_mtime) < data_referencia
     except OSError:
         return False
 
@@ -664,6 +664,9 @@ def arquivar_assinatura(assinatura: Path, pdf: Path, pastas: dict[str, Path]) ->
 
 
 def mover_arquivo_word(caminho: Path, pastas: dict[str, Path]) -> None:
+    if not arquivo_anterior_de_hoje(caminho):
+        log.debug("Arquivo Word aguardando o dia seguinte para classificacao: %s", caminho.name)
+        return
     destino = pastas["arquivos_word"] / caminho.name
     destino.parent.mkdir(parents=True, exist_ok=True)
     mover_com_retry(caminho, destino)
@@ -754,6 +757,9 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
 
 def processar_assinatura(caminho: Path, pastas: dict[str, Path], raiz: Path) -> None:
     if caminho.suffix.lower() not in EXTENSOES_ASSINATURA or not caminho.is_file():
+        return
+    if not arquivo_anterior_de_hoje(caminho):
+        log.debug("Assinatura aguardando o dia seguinte para classificacao: %s", caminho.name)
         return
 
     pdf = encontrar_pdf_da_assinatura(caminho, raiz)
