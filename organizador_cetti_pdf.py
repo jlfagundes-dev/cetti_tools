@@ -444,8 +444,8 @@ def identificar_documento(caminho: Path) -> tuple[str, bool]:
     return cliente, esta_protocolado(texto, caminho.name)
 
 
-def aguardar_arquivo_pronto(caminho: Path, tentativas: int = 12, intervalo: float = 2.0) -> bool:
-    """Aguarda a conclusao de copias ou sincronizacoes antes do processamento."""
+def aguardar_arquivo_pronto(caminho: Path, tentativas: int = 8, intervalo: float = 1.0) -> bool:
+    """Confirma que o arquivo existe, pode ser lido e parou de ser alterado."""
     tamanho_anterior = None
     modificacao_anterior = None
     for _ in range(tentativas):
@@ -478,10 +478,17 @@ def mover_com_retry(origem: Path, destino: Path) -> None:
         try:
             shutil.move(str(origem), str(destino))
             return
-        except PermissionError:
+        except PermissionError as erro:
             if tentativa == 6:
                 raise
-            time.sleep(5)
+            log.debug(
+                "Arquivo ocupado; nova tentativa de movimentacao %s/%s | arquivo=%s | erro=%s",
+                tentativa,
+                6,
+                origem.name,
+                erro,
+            )
+            time.sleep(min(tentativa, 3))
 
 
 def garantir_clientes_disponivel(pastas: dict[str, Path], tentativas: int = 12, intervalo: float = 5.0) -> bool:
@@ -667,6 +674,12 @@ def mover_arquivo_word(caminho: Path, pastas: dict[str, Path]) -> None:
     if not arquivo_anterior_de_hoje(caminho):
         log.debug("Arquivo Word aguardando o dia seguinte para classificacao: %s", caminho.name)
         return
+    if not aguardar_arquivo_pronto(caminho):
+        log.warning("Arquivo Word aguardando conclusao da copia ou sincronizacao: %s", caminho.name)
+        return
+    if not caminho.exists():
+        log.info("Arquivo Word ja foi movido por outra rotina: %s", caminho.name)
+        return
     destino = pastas["arquivos_word"] / caminho.name
     destino.parent.mkdir(parents=True, exist_ok=True)
     mover_com_retry(caminho, destino)
@@ -751,6 +764,8 @@ def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
 
         if assinatura is not None and assinatura.exists():
             arquivar_assinatura(assinatura, destino, pastas)
+    except FileNotFoundError:
+        log.info("PDF ja foi movido por outra rotina: %s", caminho.name)
     except Exception as erro:
         log.error("Nao foi possivel processar %s: %s", caminho.name, erro)
 
@@ -760,6 +775,9 @@ def processar_assinatura(caminho: Path, pastas: dict[str, Path], raiz: Path) -> 
         return
     if not arquivo_anterior_de_hoje(caminho):
         log.debug("Assinatura aguardando o dia seguinte para classificacao: %s", caminho.name)
+        return
+    if not aguardar_arquivo_pronto(caminho):
+        log.warning("Assinatura aguardando conclusao da copia ou sincronizacao: %s", caminho.name)
         return
 
     pdf = encontrar_pdf_da_assinatura(caminho, raiz)
