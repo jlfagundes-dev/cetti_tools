@@ -434,3 +434,7 @@
 2026-09-16 12:09:56,143 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Decreto Romario.pdf'
 2026-09-16 12:09:56,159 | ERROR | Nao foi possivel reavaliar Contrato de trabalho Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Contrato de trabalho Romario.pdf'
 2026-09-16 12:09:58,351 | ERROR | Nao foi possivel reavaliar Decreto Romario.pdf: [Errno 2] No such file or directory: 'C:\\Users\\jlfag\\OneDrive\\Documentos\\00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE\\Decreto Romario.pdf'
+2026-09-17 10:47:43,383 | INFO | Cliente identificado com evidencia nome do arquivo | cliente=SHIRLENI | arquivo=peticao shirleni.pdf
+2026-09-17 10:47:43,384 | INFO | Candidato OCR descartado | campo=pagador | valor=ICPF ENDEREGO CIDADE UF CEP DO PAGADOR | motivo=poucos tokens reais
+2026-09-17 10:47:43,384 | INFO | Nenhum cliente confiavel encontrado | arquivo=guia.pdf
+2026-09-17 10:47:43,385 | INFO | Cliente identificado com evidencia OCR:nome | cliente=MARIA SILVA | arquivo=documento.pdf

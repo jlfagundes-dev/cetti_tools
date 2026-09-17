@@ -26,6 +26,24 @@ EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")
 EXTENSOES_WORD = (".doc", ".docx", ".docm")
 CLIENTE_DESCONHECIDO = "00_CLIENTE_NAO_IDENTIFICADO"
 ROTULOS_DOCUMENTO_EXTERNO = ("pagador", "nome", "titular", "beneficiario", "beneficiário")
+PALAVRAS_RUIDO_OCR = {
+    "a",
+    "as",
+    "cidade",
+    "cep",
+    "cpf",
+    "do",
+    "dos",
+    "endereco",
+    "enderego",
+    "estado",
+    "e",
+    "matricula",
+    "pagador",
+    "pagadoricpf",
+    "para",
+    "uf",
+}
 
 logging.basicConfig(
     level=logging.INFO,
@@ -281,6 +299,14 @@ def normalizar_busca_cliente(texto: str) -> str:
     return re.sub(r"[^A-Z0-9]+", " ", sem_acentos(texto).upper()).strip()
 
 
+def tokens_nome_cliente(texto: str) -> set[str]:
+    return {
+        token.lower()
+        for token in normalizar_busca_cliente(texto).split()
+        if len(token) > 2 and token.lower() not in PALAVRAS_RUIDO_OCR
+    }
+
+
 def extrair_nomes_externos(texto: str) -> list[str]:
     """Extrai nomes de campos externos, inclusive quando o valor esta na linha seguinte."""
     return [candidato for _, candidato in extrair_campos_externos(texto)]
@@ -309,28 +335,69 @@ def extrair_campos_externos(texto: str) -> list[tuple[str, str]]:
 
 
 def buscar_cliente_externo(texto: str, nome_arquivo: str, clientes_dir: Path) -> str:
-    """Procura um cliente ja cadastrado sem criar pasta durante o fluxo externo."""
-    conteudo = normalizar_busca_cliente(f"{nome_arquivo}\n{texto}")
-    candidatos = extrair_campos_externos(texto) + [("", conteudo)]
-    melhor_cliente = ""
-    melhor_pontuacao = 0
-    for pasta in clientes_dir.iterdir():
+    """Procura um cliente existente com evidencias fortes e nao ambiguas."""
+    tokens_arquivo = tokens_nome_cliente(Path(nome_arquivo).stem)
+    candidatos = []
+    for rotulo, candidato in extrair_campos_externos(texto):
+        tokens_candidato = tokens_nome_cliente(candidato)
+        if len(tokens_candidato) < 2:
+            log.info("Candidato OCR descartado | campo=%s | valor=%s | motivo=poucos tokens reais", rotulo, candidato)
+            continue
+        candidatos.append((rotulo, tokens_candidato))
+
+    resultados = []
+    try:
+        pastas_clientes = list(clientes_dir.iterdir())
+    except OSError as erro:
+        log.warning("Nao foi possivel consultar as pastas de clientes: %s", erro)
+        return ""
+
+    for pasta in pastas_clientes:
         if not pasta.is_dir() or pasta.name.startswith("00_"):
             continue
-        nome = normalizar_busca_cliente(pasta.name)
-        tokens = [token for token in nome.split() if len(token) > 2]
-        pontuacao = 0
-        for rotulo, candidato in candidatos:
-            correspondencia = sum(token in candidato.split() for token in tokens)
-            if rotulo == "pagador":
-                correspondencia += 1000
-            pontuacao = max(pontuacao, correspondencia)
-        if nome and nome in conteudo:
-            pontuacao += 100
-        if pontuacao > melhor_pontuacao:
-            melhor_pontuacao = pontuacao
-            melhor_cliente = pasta.name
-    return melhor_cliente if melhor_pontuacao >= 2 else ""
+        tokens_cliente = tokens_nome_cliente(pasta.name)
+        if not tokens_cliente:
+            continue
+
+        melhor_pontuacao = 0
+        melhor_motivo = ""
+        for rotulo, tokens_candidato in candidatos:
+            correspondencias = tokens_cliente & tokens_candidato
+            if len(tokens_cliente) >= 2 and len(correspondencias) >= 2:
+                pontuacao = len(correspondencias) * 10
+                if correspondencias == tokens_cliente:
+                    pontuacao += 10
+                if pontuacao > melhor_pontuacao:
+                    melhor_pontuacao = pontuacao
+                    melhor_motivo = f"OCR:{rotulo}"
+
+        correspondencias_arquivo = tokens_cliente & tokens_arquivo
+        if len(tokens_cliente) >= 2 and len(correspondencias_arquivo) >= 2:
+            pontuacao = len(correspondencias_arquivo) * 20
+            if correspondencias_arquivo == tokens_cliente:
+                pontuacao += 20
+            if pontuacao > melhor_pontuacao:
+                melhor_pontuacao = pontuacao
+                melhor_motivo = "nome do arquivo"
+        elif len(tokens_cliente) == 1 and len(correspondencias_arquivo) == 1:
+            token = next(iter(correspondencias_arquivo))
+            if len(token) >= 4:
+                melhor_pontuacao = max(melhor_pontuacao, 20)
+                melhor_motivo = "nome do arquivo"
+
+        if melhor_pontuacao:
+            resultados.append((melhor_pontuacao, pasta.name, melhor_motivo))
+
+    resultados.sort(reverse=True)
+    if not resultados:
+        log.info("Nenhum cliente confiavel encontrado | arquivo=%s", nome_arquivo)
+        return ""
+    if len(resultados) > 1 and resultados[0][0] == resultados[1][0]:
+        log.info("Candidatos OCR ambiguos descartados | arquivo=%s | candidatos=%s", nome_arquivo, resultados[:2])
+        return ""
+    melhor_pontuacao, melhor_cliente, motivo = resultados[0]
+    log.info("Cliente identificado com evidencia %s | cliente=%s | arquivo=%s", motivo, melhor_cliente, nome_arquivo)
+    return melhor_cliente
 
 
 def esta_protocolado(texto: str, nome_arquivo: str) -> bool:
