@@ -223,6 +223,11 @@ def limpar_candidato(valor: str) -> str:
 
 
 def candidato_citado_no_nome_arquivo(candidato: str, nome_arquivo: str) -> bool:
+    return pontuar_candidato_no_nome_arquivo(candidato, nome_arquivo) > 0
+
+
+def pontuar_candidato_no_nome_arquivo(candidato: str, nome_arquivo: str) -> int:
+    """Pontua quanto o nome do arquivo confirma um candidato completo do PDF."""
     tokens_candidato = [
         token
         for token in normalizar_busca_cliente(candidato).split()
@@ -233,7 +238,14 @@ def candidato_citado_no_nome_arquivo(candidato: str, nome_arquivo: str) -> bool:
         for token in normalizar_busca_cliente(Path(nome_arquivo).stem).split()
         if token not in PALAVRAS_NOME_ARQUIVO and len(token) >= 3
     }
-    return bool(tokens_candidato) and tokens_candidato[0] in tokens_arquivo
+    correspondencias = set(tokens_candidato) & tokens_arquivo
+    if not correspondencias:
+        return 0
+
+    pontuacao = len(correspondencias) * 10
+    if len(correspondencias) == len(tokens_candidato):
+        pontuacao += 5
+    return pontuacao
 
 
 def identificar_cliente(texto: str, nome_arquivo: str) -> str:
@@ -285,9 +297,14 @@ def identificar_cliente(texto: str, nome_arquivo: str) -> str:
             if candidato:
                 candidatos.append(candidato)
 
-    for candidato in candidatos:
-        if candidato_citado_no_nome_arquivo(candidato, nome_arquivo):
-            return nome_seguro(candidato, CLIENTE_DESCONHECIDO)
+    candidatos_confirmados = [
+        (pontuar_candidato_no_nome_arquivo(candidato, nome_arquivo), indice, candidato)
+        for indice, candidato in enumerate(candidatos)
+        if candidato_citado_no_nome_arquivo(candidato, nome_arquivo)
+    ]
+    if candidatos_confirmados:
+        _, _, melhor_candidato = max(candidatos_confirmados, key=lambda item: (item[0], -item[1]))
+        return nome_seguro(melhor_candidato, CLIENTE_DESCONHECIDO)
 
     # Sem correspondencia com o nome do arquivo, nao ha seguranca suficiente
     # para criar uma pasta de cliente a partir de um candidato do texto.
