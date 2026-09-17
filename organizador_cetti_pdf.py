@@ -116,11 +116,11 @@ PALAVRAS_DE_FRASE = {
 }
 
 
-def arquivo_do_dia_anterior(caminho: Path, hoje: date | None = None) -> bool:
-    """Permite classificar somente PDFs modificados no dia anterior."""
+def arquivo_anterior_de_hoje(caminho: Path, hoje: date | None = None) -> bool:
+    """Permite classificar somente PDFs modificados no dia anterior pra tras."""
     try:
         data_referencia = hoje or date.today()
-        return date.fromtimestamp(caminho.stat().st_mtime) == data_referencia - timedelta(days=1)
+        return date.fromtimestamp(caminho.stat().st_mtime) < data_referencia - timedelta(days=1)
     except OSError:
         return False
 
@@ -341,14 +341,42 @@ def identificar_documento(caminho: Path) -> tuple[str, bool]:
     return cliente, esta_protocolado(texto, caminho.name)
 
 
+def aguardar_arquivo_pronto(caminho: Path, tentativas: int = 12, intervalo: float = 2.0) -> bool:
+    """Aguarda a conclusao de copias ou sincronizacoes antes do processamento."""
+    tamanho_anterior = None
+    modificacao_anterior = None
+    for _ in range(tentativas):
+        try:
+            estatisticas = caminho.stat()
+            with caminho.open("rb"):
+                pass
+        except (FileNotFoundError, PermissionError, OSError):
+            time.sleep(intervalo)
+            continue
+
+        tamanho_atual = estatisticas.st_size
+        modificacao_atual = estatisticas.st_mtime_ns
+        if (
+            tamanho_atual > 0
+            and tamanho_atual == tamanho_anterior
+            and modificacao_atual == modificacao_anterior
+        ):
+            return True
+
+        tamanho_anterior = tamanho_atual
+        modificacao_anterior = modificacao_atual
+        time.sleep(intervalo)
+    return False
+
+
 def mover_com_retry(origem: Path, destino: Path) -> None:
     destino.parent.mkdir(parents=True, exist_ok=True)
-    for tentativa in range(1, 4):
+    for tentativa in range(1, 7):
         try:
             shutil.move(str(origem), str(destino))
             return
         except PermissionError:
-            if tentativa == 3:
+            if tentativa == 6:
                 raise
             time.sleep(5)
 
@@ -366,7 +394,7 @@ def processar_pendentes(pastas: dict[str, Path]) -> None:
     if not pendentes.exists():
         return
     for caminho in sorted(pendentes.glob("*.pdf")):
-        if not arquivo_do_dia_anterior(caminho):
+        if not arquivo_anterior_de_hoje(caminho):
             log.debug("Documento externo aguardando o dia seguinte para reavaliacao: %s", caminho.name)
             continue
         try:
@@ -554,8 +582,11 @@ def migrar_pasta_clientes_antiga(pastas: dict[str, Path]) -> None:
 def processar_pdf(caminho: Path, pastas: dict[str, Path]) -> None:
     if caminho.suffix.lower() != EXTENSAO_PERMITIDA or not caminho.is_file():
         return
-    if not arquivo_do_dia_anterior(caminho):
+    if not arquivo_anterior_de_hoje(caminho):
         log.debug("PDF aguardando o dia seguinte para classificacao: %s", caminho.name)
+        return
+    if not aguardar_arquivo_pronto(caminho):
+        log.warning("PDF aguardando conclusao da copia ou sincronizacao: %s", caminho.name)
         return
 
     assinatura = encontrar_assinatura(caminho)
