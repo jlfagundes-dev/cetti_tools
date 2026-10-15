@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 # Ele sobe o monitor PDF sem IA e o Streamlit localmente e, em seguida, inicia o cloudflared
 # apontando para a configuracao dedicada deste projeto.
 
-$ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $Python = Join-Path $ProjectRoot '.venv\Scripts\python.exe'
 $Cloudflared = (Get-Command cloudflared.exe -ErrorAction SilentlyContinue).Source
 if (-not $Cloudflared) {

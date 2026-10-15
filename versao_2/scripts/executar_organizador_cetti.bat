@@ -1,9 +1,9 @@
 @echo off
 REM Script para executar o organizador principal com o ambiente virtual
 
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
-set "PYTHON=%~dp0.venv\Scripts\python.exe"
+set "PYTHON=%~dp0..\..\.venv\Scripts\python.exe"
 
 if not exist "%PYTHON%" (
 	echo Nao foi possivel encontrar "%PYTHON%"

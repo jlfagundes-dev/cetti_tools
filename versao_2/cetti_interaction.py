@@ -13,7 +13,7 @@ from uuid import uuid4
 
 
 BASE_DIR = Path(__file__).parent
-PENDING_FILE = BASE_DIR / "cetti_pending_request.json"
+PENDING_FILE = BASE_DIR / "config" / "cetti_pending_request.json"
 
 
 def criar_pedido_cliente(arquivo: str, advogado: str, tipo: str) -> str:

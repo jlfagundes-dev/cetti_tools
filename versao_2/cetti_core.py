@@ -8,7 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / "config" / ".env", override=True)
 
 def obter_raiz() -> Path | None:
     """Retorna a pasta Documentos do usuário, inclusive no Windows localizado."""

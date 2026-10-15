@@ -3,7 +3,7 @@ REM Script para configurar o ambiente virtual e instalar dependências
 REM Execute este arquivo uma única vez no computador do cliente
 
 setlocal EnableExtensions EnableDelayedExpansion
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 echo.
 echo ========================================================
@@ -30,7 +30,7 @@ if not exist ".venv" (
     )
 )
 
-set "PYTHON=%~dp0.venv\Scripts\python.exe"
+set "PYTHON=%~dp0..\.venv\Scripts\python.exe"
 if not exist "%PYTHON%" (
     echo ERRO: nao encontrei o Python do ambiente virtual em "%PYTHON%".
     exit /b 1

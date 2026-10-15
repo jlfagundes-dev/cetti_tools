@@ -1,6 +1,6 @@
 @echo off
 setlocal
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 set "PYTHON=%~dp0.venv\Scripts\python.exe"
 set "START_SCRIPT=%~dp0start_cetti_local.ps1"

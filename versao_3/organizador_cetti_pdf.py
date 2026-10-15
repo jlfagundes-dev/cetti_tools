@@ -19,7 +19,7 @@ from cetti_logging import log_monitor
 from cetti_logging import LOG_FILE
 
 
-load_dotenv(override=True)
+load_dotenv(Path(__file__).parent / "config" / ".env", override=True)
 
 EXTENSAO_PERMITIDA = ".pdf"
 EXTENSOES_ASSINATURA = (".p7s", ".p7m", ".sig")

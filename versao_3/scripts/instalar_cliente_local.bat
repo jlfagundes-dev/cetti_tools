@@ -1,9 +1,9 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 set "PROJECT_ROOT=%~dp0"
-set "PYTHON=%~dp0.venv\Scripts\python.exe"
+set "PYTHON=%~dp0..\.venv\Scripts\python.exe"
 set "PYTHON_BASE="
 set "START_SCRIPT=%~dp0start_cetti_local.ps1"
 set "TASK_NAME=ArquivistaDigitalCettiLocal"

@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-LOG_FILE = Path(__file__).parent / "cetti_monitor.log"
+LOG_FILE = Path(__file__).parent / "logs" / "cetti_monitor.log"
 
 
 def log_monitor(mensagem: str):
@@ -13,6 +13,7 @@ def log_monitor(mensagem: str):
     timestamp = datetime.now().strftime("%H:%M:%S")
     msg_formatada = f"[{timestamp}] {mensagem}"
     
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(msg_formatada + "\n")
     

@@ -2,7 +2,7 @@
 REM Inicia a interface e o monitor em modo silencioso, sem abrir dois terminais.
 
 setlocal
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 set "SCRIPT_PS1=%~dp0start_cetti.ps1"
 

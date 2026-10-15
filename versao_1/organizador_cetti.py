@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 import json
+from pathlib import Path
 from importlib.metadata import PackageNotFoundError, version as package_version
 import google.genai as genai
 from watchdog.observers import Observer
@@ -19,7 +20,7 @@ except PackageNotFoundError:
 print(f"🚀 Iniciando Arquivista Digital Inteligente da Cetti... (Versão SDK: {SDK_VERSION})")
 
 def carregar_api_key():
-    load_dotenv(override=True)
+    load_dotenv(Path(__file__).parent / "config" / ".env", override=True)
 
     chave = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not chave:
@@ -55,7 +56,7 @@ except Exception as e:
     raise SystemExit(1)
 
 # Configurações de Caminho
-BASE_PATH = "G:/My Drive/Cetti_Organizador"
+BASE_PATH = os.getenv("CETTI_ROOT", "G:/My Drive/Cetti_Organizador")
 INPUT_DIR = os.path.join(BASE_PATH, "0_ENTRADA")
 EXTENSOES_PERMITIDAS = ('.pdf', '.doc', '.docx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png', '.txt')
 

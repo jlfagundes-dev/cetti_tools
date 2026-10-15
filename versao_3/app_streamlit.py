@@ -9,7 +9,7 @@ from cetti_core import obter_raiz
 from cetti_logging import LOG_FILE
 
 
-PDF_LOG_FILE = Path(__file__).parent / "cetti_pdf.log"
+PDF_LOG_FILE = Path(__file__).parent / "logs" / "cetti_pdf.log"
 
 
 st.set_page_config(

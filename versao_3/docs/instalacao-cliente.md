@@ -6,7 +6,7 @@ Este fluxo instala o arquivista localmente e faz o monitor PDF e o painel inicia
 
 ```powershell
 git clone <URL_DO_REPOSITORIO>
-cd cetti_tools
+cd cetti_tools\versao_3
 ```
 
 ## 2. Executar o instalador local
@@ -14,7 +14,7 @@ cd cetti_tools
 Na pasta clonada, clique duas vezes em:
 
 ```bat
-instalar_cliente_local.bat
+scripts\instalar_cliente_local.bat
 ```
 
 O instalador:
@@ -42,7 +42,7 @@ Opcional para comportamento remoto por domínio público:
 Para testar imediatamente sem reiniciar o computador:
 
 ```bat
-iniciar_cetti_local.bat
+scripts\iniciar_cetti_local.bat
 ```
 
 Depois, o cliente pode acessar o painel local em:

@@ -15,7 +15,7 @@ from cetti_interaction import aguardar_resposta, criar_pedido_cliente, limpar_pe
 from cetti_logging import log_monitor
 
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / "config" / ".env", override=True)
 
 try:
     SDK_VERSION = package_version("google-genai")
