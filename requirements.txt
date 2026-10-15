@@ -1,0 +1,4 @@
+# Dependencias opcionais da Etapa 6 para extracao local e OCR.
+pymupdf>=1.24.0
+pytesseract>=0.3.13
+Pillow>=10.0.0
