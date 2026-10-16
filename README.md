@@ -22,4 +22,7 @@ Os módulos da base local são:
 - `cetti_extracao.py`: extração nativa de PDF e OCR opcional.
 - `cetti_ia_local.py`: integração opcional com Ollama local.
 
-Os documentos reais não fazem parte do repositório. Consulte [docs/arquitetura.md](docs/arquitetura.md), [docs/instalacao.md](docs/instalacao.md), [docs/uso.md](docs/uso.md), [docs/testes.md](docs/testes.md) e [docs/recuperacao.md](docs/recuperacao.md).
+Os documentos reais não fazem parte do repositório. Para instalar, configurar o `.env` e executar a base v4, consulte
+[docs/instalacao.md](docs/instalacao.md). Consulte também
+[docs/arquitetura.md](docs/arquitetura.md), [docs/uso.md](docs/uso.md),
+[docs/testes.md](docs/testes.md) e [docs/recuperacao.md](docs/recuperacao.md).

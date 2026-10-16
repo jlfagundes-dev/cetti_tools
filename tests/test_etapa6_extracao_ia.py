@@ -13,6 +13,7 @@ from cetti_ia_local import (
     OllamaConfig,
     validate_interpretation,
 )
+from cetti_organizacao import _is_excluded_name
 
 
 class Etapa6Tests(unittest.TestCase):
@@ -102,6 +103,109 @@ class Etapa6Tests(unittest.TestCase):
         client = OllamaClient(OllamaConfig(base_url="http://127.0.0.1:11434"))
         with patch.object(client, "_request", side_effect=OSError("offline")):
             self.assertFalse(client.is_available())
+
+    def test_qwen_desativa_raciocinio_e_limita_geracao(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": '{"client_name": null, "reason": "sem evidencia"}'},
+        ) as request:
+            result = client.generate(
+                "Identifique o cliente.",
+                model="qwen3:4b",
+                json_response=True,
+            )
+
+        self.assertIn('"client_name"', result)
+        payload = request.call_args.args[2]
+        self.assertFalse(payload["think"])
+        self.assertEqual(payload["options"], {"num_predict": 256, "temperature": 0})
+        self.assertEqual(payload["format"], "json")
+
+    def test_identificacao_limita_resposta_do_qwen(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": '{"client_name": null, "reason": "sem evidencia"}'},
+        ) as request:
+            client.identify_client_name("Texto inicial", "documento.pdf", [])
+
+        self.assertEqual(request.call_args.args[2]["options"]["num_predict"], 128)
+
+    def test_prompt_informa_advogado_que_nao_pode_ser_cliente(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": '{"client_name": null, "reason": "advogado"}'},
+        ) as request:
+            client.identify_client_name(
+                "Texto do documento",
+                "decisao.pdf",
+                [],
+                ["DR. GENELUCIO"],
+            )
+
+        self.assertIn("DR. GENELUCIO", request.call_args.args[2]["prompt"])
+        self.assertIn("NUNCA podem ser clientes", request.call_args.args[2]["prompt"])
+
+    def test_nome_completo_do_advogado_e_excluido(self) -> None:
+        self.assertTrue(
+            _is_excluded_name(
+                "GENELUCIO FABIO ALVES CARNEIRO VIEIRA",
+                ["DR. GENELUCIO"],
+            )
+        )
+
+    def test_disponibilidade_tem_timeout_separado(self) -> None:
+        client = OllamaClient(
+            OllamaConfig(timeout=60.0, availability_timeout=15.0)
+        )
+        with patch("cetti_ia_local.urllib.request.urlopen") as urlopen:
+            response = urlopen.return_value.__enter__.return_value
+            response.read.return_value = b'{"models": []}'
+            client.is_available()
+
+        self.assertEqual(urlopen.call_args.kwargs["timeout"], 15.0)
+
+    def test_identificacao_envia_somente_trecho_inicial(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        texto = "INICIO DO DOCUMENTO\n" + ("x" * 8_000) + "\nFIM DO DOCUMENTO"
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": '{"client_name": null, "reason": "sem evidencia"}'},
+        ) as request:
+            client.identify_client_name(texto, "documento.pdf", [])
+
+        prompt = request.call_args.args[2]["prompt"]
+        self.assertIn("INICIO DO DOCUMENTO", prompt)
+        self.assertNotIn("FIM DO DOCUMENTO", prompt)
+        self.assertIn("o restante do documento nao foi enviado ao Qwen", prompt)
+
+    def test_diagnostico_registra_resposta_do_qwen(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": '{"client_name": "Erasmo", "reason": "arquivo"}'},
+        ):
+            client.generate("Identifique o cliente.", model="qwen3:4b", json_response=True)
+
+        self.assertIn('resposta:\n{"client_name": "Erasmo", "reason": "arquivo"}', client.audit_log[0])
+
+    def test_diagnostico_registra_erro_do_qwen(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            side_effect=TimeoutError("timed out"),
+        ), self.assertRaises(TimeoutError):
+            client.generate("Identifique o cliente.", model="qwen3:4b")
+
+        self.assertIn("erro:\ntimed out", client.audit_log[0])
 
 
 if __name__ == "__main__":

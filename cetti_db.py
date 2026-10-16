@@ -8,6 +8,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from cetti_config import load_project_environment
+
+
+load_project_environment()
+
 SCHEMA_VERSION = 1
 
 

@@ -6,7 +6,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
+from cetti_config import load_project_environment
 from cetti_db import CettiDatabase
+
+load_project_environment()
 
 IGNORED_DIRECTORIES = {
     ".git",

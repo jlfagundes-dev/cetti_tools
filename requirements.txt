@@ -1,4 +1,8 @@
-# Dependencias opcionais da Etapa 6 para extracao local e OCR.
+# Dependencias da interface e configuracao.
+streamlit>=1.40.0
+python-dotenv>=1.0.1
+
+# Dependencias da Etapa 6 para extracao local e OCR.
 pymupdf>=1.24.0
 pytesseract>=0.3.13
 Pillow>=10.0.0

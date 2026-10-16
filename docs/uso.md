@@ -10,6 +10,57 @@ python cetti_indexador.py
 
 A operação percorre a raiz somente para leitura e imprime um resumo com arquivos novos, modificados, renomeados, removidos e ignorados.
 
+## Organização pela interface
+
+Abra `python organizador_cetti_v4.py ui` e use a aba **Ler e organizar
+documentos**. Um único clique executa a varredura dos arquivos diretamente na
+pasta configurada, valida se cada arquivo terminou de ser copiado, extrai o
+texto dos PDFs, tenta identificar o cliente pelas pastas existentes e move os
+arquivos para a estrutura oficial. Arquivos já dentro de subpastas não são
+movidos novamente. A entrada considera somente PDF, P7S/P7M/SIG e Word
+(DOC/DOCX/DOCM); arquivos como `.url` e `desktop.ini` permanecem intocados e
+não aparecem na varredura.
+
+PDFs cujo cliente não pôde ser identificado vão para
+`00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE`. Eles continuam disponíveis para
+pesquisa e revisão manual. Nenhum arquivo é sobrescrito: em caso de nome
+duplicado, o destino recebe o sufixo `_duplicado`. Ao finalizar, a interface
+mostra o resultado individual de cada arquivo processado, incluindo o cliente
+identificado e o caminho de destino.
+
+Se a opção de Ollama estiver marcada, a aplicação reutiliza uma instância local
+já ativa ou inicia `ollama serve` somente durante a rotina. Ao terminar, encerra
+apenas o processo iniciado pela aplicação; não interfere em uma instância que já
+estava ativa.
+
+O painel também oferece o diagnóstico detalhado de cada PDF. Ele informa se o
+texto veio do PyMuPDF nativo, Tesseract ou `glm-ocr`, qual modelo Ollama foi
+usado, o nome retornado pelo modelo Qwen e o prompt enviado. Quando Ollama não
+foi usado, isso também é registrado explicitamente.
+
+Quando o Ollama está disponível, a decisão do cliente é feita pelo Qwen usando
+o texto extraído, o nome do arquivo e a lista de pastas de clientes existentes.
+O nome do arquivo funciona como evidência principal para diferenciar, por
+exemplo, autor e réu. As regras locais permanecem como fallback caso o Ollama
+não esteja disponível ou não retorne uma identificação válida.
+
+Para evitar o timeout observado no modo de raciocínio padrão do `qwen3:4b`, as
+gerações Qwen usam `think=false`, temperatura `0` e no máximo `256` tokens. O
+A identificação do cliente usa no máximo 128 tokens; as demais gerações usam
+256. O timeout de geração padrão é de 120 segundos, enquanto a verificação do serviço
+usa um timeout separado de 15 segundos. Esses valores podem ser alterados no
+`.env` por `CETTI_OLLAMA_TIMEOUT` e `CETTI_OLLAMA_STATUS_TIMEOUT`.
+
+Na identificação do cliente, o prompt envia somente os primeiros 8.000
+caracteres do texto extraído, priorizando a primeira página e os primeiros
+parágrafos. O diagnóstico detalhado registra o prompt, a resposta bruta do
+Qwen e o erro da chamada quando houver timeout ou outra falha.
+
+O nome configurado em `ADVOGADO_PADRAO` nunca é considerado cliente. A regra
+vale tanto para a resposta do Qwen quanto para os candidatos extraídos
+localmente; por exemplo, `DR. GENELÚCIO` também bloqueia o nome completo do
+advogado quando ele aparece no documento.
+
 ## Pesquisa
 
 A pesquisa pode ser usada por código:

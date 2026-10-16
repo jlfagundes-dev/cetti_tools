@@ -52,6 +52,10 @@ class ExtractionResult:
             if page.review_required
         )
 
+    @property
+    def methods(self) -> tuple[str, ...]:
+        return tuple(dict.fromkeys(page.method for page in self.pages))
+
 
 def _load_pymupdf():
     try:
