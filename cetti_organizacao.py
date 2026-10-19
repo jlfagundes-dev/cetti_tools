@@ -6,9 +6,12 @@ import shutil
 import time
 import unicodedata
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Callable
 
+from cetti_logging import append_log, new_run_id
+from cetti_db import CettiDatabase
 from cetti_extracao import ExtractionResult, extract_pdf
 from cetti_indexador import index_documents
 
@@ -16,6 +19,10 @@ from cetti_indexador import index_documents
 WORD_SUFFIXES = {".doc", ".docx", ".docm"}
 SIGNATURE_SUFFIXES = {".p7s", ".p7m", ".sig"}
 PDF_SUFFIX = ".pdf"
+GENERIC_FILENAME_TOKENS = {
+    "acordo", "anexo", "ata", "decisao", "documento", "manifestacao",
+    "oficio", "peticao", "processo", "sentenca",
+}
 UNKNOWN_FOLDER = "00_ARQUIVOS_NAO_ORGANIZADOS_AUTOMATICAMENTE"
 CLIENTS_FOLDER = "01_CLIENTES"
 WORD_FOLDER = "02_ARQUIVOS_DO_WORD"
@@ -175,6 +182,101 @@ def _client_folders(root: Path) -> list[Path]:
                   key=lambda path: path.name.casefold())
 
 
+def _filename_token_match_score(filename_token: str, client_token: str) -> int:
+    if filename_token == client_token:
+        return 30
+    if len(filename_token) < 4 or len(client_token) < 4:
+        return 0
+    if SequenceMatcher(None, filename_token, client_token).ratio() >= 0.8:
+        return 18
+    return 0
+
+
+def _client_from_filename(
+    path: Path,
+    clients: list[Path],
+    excluded_names: list[str],
+) -> Path | None:
+    filename_tokens = _tokens(path.stem)
+    if not filename_tokens:
+        return None
+
+    candidates: list[tuple[int, int, Path]] = []
+    for client in clients:
+        if _is_excluded_name(client.name, excluded_names):
+            continue
+        client_tokens = _tokens(client.name)
+        token_scores = [
+            max(
+                (_filename_token_match_score(filename_token, client_token)
+                 for filename_token in filename_tokens),
+                default=0,
+            )
+            for client_token in client_tokens
+        ]
+        matched_scores = [score for score in token_scores if score]
+        if not matched_scores:
+            continue
+        if (
+            len(matched_scores) == 1
+            and matched_scores[0] == 30
+            and any(
+                len(token) >= 4
+                and token not in GENERIC_FILENAME_TOKENS
+                and token not in client_tokens
+                for token in filename_tokens
+            )
+        ):
+            continue
+        candidates.append((sum(matched_scores), len(matched_scores), client))
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (-item[0], -item[1], item[2].name.casefold()))
+    best = candidates[0]
+    if len(candidates) > 1 and best[:2] == candidates[1][:2]:
+        return None
+    return best[2]
+
+
+def _folder_for_client_name(
+    path: Path,
+    clients: list[Path],
+    client_name: str,
+    excluded_names: list[str],
+) -> Path | None:
+    if not _looks_like_person_name(client_name) or _is_excluded_name(client_name, excluded_names):
+        return None
+
+    normalized_name = _normalize(client_name)
+    name_tokens = _tokens(client_name)
+    exact_matches = [
+        client
+        for client in clients
+        if _normalize(client.name) == normalized_name
+    ]
+    if exact_matches:
+        return exact_matches[0]
+
+    related_matches = [
+        client
+        for client in clients
+        if name_tokens and name_tokens.issubset(_tokens(client.name))
+    ]
+    if len(related_matches) == 1:
+        return related_matches[0]
+    if related_matches:
+        return None
+
+    client_root = path.parent / CLIENTS_FOLDER
+    client_root.mkdir(parents=True, exist_ok=True)
+    new_folder = client_root / _safe_client_name(client_name)
+    if not new_folder.name:
+        return None
+    new_folder.mkdir(parents=True, exist_ok=True)
+    return new_folder
+
+
 def _identify_client(
     path: Path,
     extracted: ExtractionResult,
@@ -183,6 +285,15 @@ def _identify_client(
     excluded_names: list[str] | None = None,
 ) -> Path | None:
     excluded_names = excluded_names or []
+    if ai_name:
+        ai_client = _folder_for_client_name(path, clients, ai_name, excluded_names)
+        if ai_client is not None:
+            return ai_client
+
+    filename_client = _client_from_filename(path, clients, excluded_names)
+    if filename_client is not None:
+        return filename_client
+
     filename_tokens = _tokens(path.stem)
     candidate_names = _extract_client_names(extracted.text) + _extract_role_names(extracted.text)
     if ai_name:
@@ -221,6 +332,8 @@ def _identify_client(
             continue
         overlap = client_tokens & selected_tokens
         if not overlap:
+            continue
+        if len(overlap) == 1 and len(selected_tokens) >= 3:
             continue
         score = len(overlap) * 20
         if normalized_client == _normalize(selected_name):
@@ -308,7 +421,14 @@ def organize_documents(
         raise ValueError(f"A pasta de documentos não existe: {root_path}")
 
     summary = OrganizationSummary()
-    report = progress or (lambda message: None)
+    log_database = database or CettiDatabase().path
+    run_id = new_run_id()
+
+    def report(message: str) -> None:
+        append_log(log_database, run_id, message)
+        if progress is not None:
+            progress(message)
+
     clients = _client_folders(root_path)
     excluded_names = _attorney_names()
     if excluded_names:
@@ -366,11 +486,14 @@ def organize_documents(
                 )
                 diagnostic = f"{path.name}: extração={methods}"
                 summary.diagnostics.append(diagnostic)
+                append_log(log_database, run_id, diagnostic)
                 if excluded_names:
-                    summary.diagnostics.append(
+                    diagnostic = (
                         f"{path.name}: nomes de advogado excluídos="
                         + ", ".join(excluded_names)
                     )
+                    summary.diagnostics.append(diagnostic)
+                    append_log(log_database, run_id, diagnostic)
                 report(f"Métodos usados em {path.name}: {methods}")
                 ai_name = None
                 if ollama_client is not None:
@@ -387,7 +510,7 @@ def organize_documents(
                         )
                         if ai_name_blocked:
                             ai_name = None
-                        summary.diagnostics.append(
+                        diagnostic = (
                             f"{path.name}: Qwen/modelo={ollama_client.config.text_model}; "
                             f"nome retornado={ai_name or '(nenhum)'}"
                             + (
@@ -396,15 +519,21 @@ def organize_documents(
                                 else ""
                             )
                         )
+                        summary.diagnostics.append(diagnostic)
+                        append_log(log_database, run_id, diagnostic)
                     except Exception as error:
-                        summary.diagnostics.append(
+                        diagnostic = (
                             f"{path.name}: Qwen/modelo={ollama_client.config.text_model}; erro={error}"
                         )
+                        summary.diagnostics.append(diagnostic)
+                        append_log(log_database, run_id, diagnostic)
                         report(f"Qwen não conseguiu interpretar {path.name}: {error}")
                 else:
-                    summary.diagnostics.append(
+                    diagnostic = (
                         f"{path.name}: Qwen/Ollama não usado (cliente Ollama indisponível ou opção desmarcada)"
                     )
+                    summary.diagnostics.append(diagnostic)
+                    append_log(log_database, run_id, diagnostic)
                 client = _identify_client(path, extracted, clients, ai_name, excluded_names)
                 extracted_names = _extract_client_names(extracted.text) + _extract_role_names(extracted.text)
                 if extracted_names:
@@ -420,9 +549,12 @@ def organize_documents(
                     summary.unknown += 1
                     finish_file(path, f"cliente não identificado; movido para {destination}")
                 if ollama_client is not None and ollama_client.audit_log:
-                    summary.diagnostics.append(
-                        f"{path.name}: prompts Ollama:\n" + "\n---\n".join(ollama_client.audit_log)
+                    diagnostic = (
+                        f"{path.name}: prompts Ollama:\n"
+                        + "\n---\n".join(ollama_client.audit_log)
                     )
+                    summary.diagnostics.append(diagnostic)
+                    append_log(log_database, run_id, diagnostic)
                     ollama_client.audit_log.clear()
                 continue
             if suffix in SIGNATURE_SUFFIXES:
@@ -433,6 +565,7 @@ def organize_documents(
             summary.errors += 1
             message = f"Falha em {path.name}: {error}"
             summary.messages.append(message)
+            append_log(log_database, run_id, message)
             finish_file(path, message)
 
     for path in sorted((item for item in root_path.iterdir() if item.is_file()), key=lambda item: item.name.casefold()):
@@ -457,6 +590,7 @@ def organize_documents(
             summary.errors += 1
             message = f"Falha na assinatura {path.name}: {error}"
             summary.messages.append(message)
+            append_log(log_database, run_id, message)
             finish_file(path, message)
 
     report("Atualizando o índice SQLite...")

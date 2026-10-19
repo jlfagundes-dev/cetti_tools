@@ -56,6 +56,14 @@ caracteres do texto extraído, priorizando a primeira página e os primeiros
 parágrafos. O diagnóstico detalhado registra o prompt, a resposta bruta do
 Qwen e o erro da chamada quando houver timeout ou outra falha.
 
+Cada execução também é preservada em um log permanente. O arquivo fica em
+`logs\cetti_organizacao.log`, ao lado do banco SQLite (portanto, normalmente
+fora da pasta de documentos), e contém o identificador da execução, progresso,
+resultado de cada arquivo, erros e os diagnósticos completos do Ollama. A
+interface mostra o caminho do arquivo e oferece o botão **Baixar log completo
+da organização** ao final da rotina. Como o log pode conter texto extraído e
+prompts com dados jurídicos, mantenha-o em local protegido.
+
 O nome configurado em `ADVOGADO_PADRAO` nunca é considerado cliente. A regra
 vale tanto para a resposta do Qwen quanto para os candidatos extraídos
 localmente; por exemplo, `DR. GENELÚCIO` também bloqueia o nome completo do

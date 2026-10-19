@@ -8,6 +8,7 @@ import streamlit as st
 from cetti_busca import open_containing_folder, open_document, search_documents, select_in_explorer
 from cetti_db import CettiDatabase
 from cetti_extracao import extract_pdf
+from cetti_logging import log_path, read_log
 from cetti_indexador import default_root, index_documents, resolve_config
 from cetti_organizacao import organize_documents
 
@@ -64,6 +65,7 @@ except Exception as erro:
 
 st.write(f"**Pasta de documentos:** `{config.root}`")
 st.write(f"**Banco local:** `{config.database}`")
+st.caption(f"Log persistente das organizações: `{log_path(config.database)}`")
 
 tab_busca, tab_organizacao, tab_extracao = st.tabs(
     ["🔎 Pesquisar documentos", "📂 Ler e organizar documentos", "📄 Extrair texto de PDF"]
@@ -206,6 +208,13 @@ with tab_organizacao:
                 with st.expander("Diagnóstico detalhado: ferramentas e prompts", expanded=False):
                     for diagnostic in resumo.diagnostics:
                         st.code(diagnostic)
+            st.download_button(
+                "Baixar log completo da organização",
+                data=read_log(config.database, limit=10000),
+                file_name="cetti_organizacao.log",
+                mime="text/plain",
+                key="baixar_log_organizacao",
+            )
             if resumo.errors:
                 st.warning("Alguns arquivos foram mantidos na entrada por exigirem revisão.")
                 for mensagem in resumo.messages or []:

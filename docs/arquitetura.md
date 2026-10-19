@@ -10,6 +10,9 @@ A base nova foi implementada na raiz do repositório, sem criar `versao_4/`, con
 - `cetti_operacoes.py`: coordena movimentação física, reindexação, prevenção de sobrescrita e rollback.
 - `cetti_extracao.py`: extrai texto nativo com PyMuPDF, usa Tesseract como OCR padrão e pode fazer fallback para `glm-ocr`.
 - `cetti_ia_local.py`: acessa somente Ollama em loopback e valida respostas com evidência de página.
+- `cetti_organizacao.py`: compara primeiro o nome do arquivo com as pastas existentes,
+  incluindo pequenas diferenças de grafia, e só depois usa nomes extraídos do documento
+  para identificar ou criar a pasta do cliente.
 
 ## Limites de armazenamento
 

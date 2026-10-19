@@ -73,6 +73,15 @@ python organizador_cetti_v4.py ui
 
 O painel abre em `http://127.0.0.1:8501`. Para extrair um PDF:
 
+Para iniciar diretamente o painel no Windows, na raiz do projeto execute:
+
+```powershell
+.venv\Scripts\Activate.ps1
+python organizador_cetti_v4.py ui
+```
+
+Se o ambiente virtual já estiver ativo, basta executar o segundo comando.
+
 Na interface, use a aba **Ler e organizar documentos** e clique em
 **Ler pasta e organizar automaticamente**. A operação valida arquivos estáveis,
 analisa PDFs, move Word para `02_ARQUIVOS_DO_WORD`, move PDFs identificados para

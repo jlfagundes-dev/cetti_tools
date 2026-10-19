@@ -6,14 +6,14 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from cetti_extracao import ExtractionUnavailable, extract_pdf
+from cetti_extracao import ExtractionResult, ExtractionUnavailable, PageText, extract_pdf
 from cetti_ia_local import (
     LocalAIError,
     OllamaClient,
     OllamaConfig,
     validate_interpretation,
 )
-from cetti_organizacao import _is_excluded_name
+from cetti_organizacao import _identify_client, _is_excluded_name
 
 
 class Etapa6Tests(unittest.TestCase):
@@ -158,6 +158,106 @@ class Etapa6Tests(unittest.TestCase):
                 ["DR. GENELUCIO"],
             )
         )
+
+    def test_nome_do_arquivo_prioriza_sobrenome_ao_comparar_pastas(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            clients = [
+                base / "João Paulo Pires",
+                base / "João Arthur Siqueira Martins",
+            ]
+            path = base / "Manifestação - João Arthur.pdf"
+            extracted = ExtractionResult(path, (PageText(1, "", "native"),))
+
+            result = _identify_client(path, extracted, clients)
+
+            self.assertEqual(result, clients[1])
+
+    def test_nome_do_arquivo_tolera_erro_de_digitacao_na_pasta(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            client = base / "ELTECH MONTAGEM ELETRICA LTDA"
+            path = base / "Sentença Eltch.pdf"
+            extracted = ExtractionResult(path, (PageText(1, "", "native"),))
+
+            result = _identify_client(path, extracted, [client])
+
+            self.assertEqual(result, client)
+
+    def test_nome_completo_da_ia_nao_cai_em_pasta_com_primeiro_nome_igual(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            existing_client = base / "JOAO PAULO PIRES"
+            existing_client.mkdir()
+            path = base / "Manifestação - João Arthur.pdf"
+            extracted = ExtractionResult(path, (PageText(1, "", "native"),))
+
+            result = _identify_client(
+                path,
+                extracted,
+                [existing_client],
+                ai_name="JOAO ARTHUR SIQUEIRA MARTINS",
+            )
+
+            self.assertEqual(result, base / "01_CLIENTES" / "JOAO ARTHUR SIQUEIRA MARTINS")
+            self.assertTrue(result.is_dir())
+
+    def test_nome_da_ia_cria_pasta_com_o_nome_identificado(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            existing_client = base / "ELTCH MONTAGEM ELETRICA LTDA"
+            existing_client.mkdir()
+            path = base / "Sentenca Eltch.pdf"
+            extracted = ExtractionResult(path, (PageText(1, "", "native"),))
+
+            result = _identify_client(
+                path,
+                extracted,
+                [existing_client],
+                ai_name="ELTECH MONTAGEM ELETRICA LTDA",
+            )
+
+            self.assertEqual(
+                result,
+                base / "01_CLIENTES" / "ELTECH MONTAGEM ELETRICA LTDA",
+            )
+            self.assertTrue(result.is_dir())
+
+    def test_nome_extraido_cria_pasta_nova_em_vez_de_usar_primeiro_nome(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            existing_client = base / "JOAO PAULO PIRES"
+            existing_client.mkdir()
+            path = base / "Manifestação - João Arthur.pdf"
+            extracted = ExtractionResult(
+                path,
+                (
+                    PageText(
+                        1,
+                        "Nome completo:\nJOAO ARTHUR SIQUEIRA MARTINS",
+                        "native",
+                    ),
+                ),
+            )
+
+            result = _identify_client(path, extracted, [existing_client])
+
+            self.assertEqual(result, base / "01_CLIENTES" / "JOAO ARTHUR SIQUEIRA MARTINS")
+            self.assertTrue(result.is_dir())
+
+    def test_nome_de_arquivo_com_apenas_primeiro_nome_nao_escolhe_cliente_ambiguo(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            clients = [
+                base / "JOAO PAULO PIRES",
+                base / "JOAO ARTHUR SIQUEIRA MARTINS",
+            ]
+            path = base / "Documento Joao.pdf"
+            extracted = ExtractionResult(path, (PageText(1, "", "native"),))
+
+            result = _identify_client(path, extracted, clients)
+
+            self.assertIsNone(result)
 
     def test_disponibilidade_tem_timeout_separado(self) -> None:
         client = OllamaClient(
