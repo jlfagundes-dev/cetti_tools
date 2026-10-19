@@ -38,16 +38,18 @@ texto veio do PyMuPDF nativo, Tesseract ou `glm-ocr`, qual modelo Ollama foi
 usado, o nome retornado pelo modelo Qwen e o prompt enviado. Quando Ollama não
 foi usado, isso também é registrado explicitamente.
 
-Quando o Ollama está disponível, a decisão do cliente é feita pelo Qwen usando
-o texto extraído, o nome do arquivo e a lista de pastas de clientes existentes.
-O nome do arquivo funciona como evidência principal para diferenciar, por
-exemplo, autor e réu. As regras locais permanecem como fallback caso o Ollama
-não esteja disponível ou não retorne uma identificação válida.
+Quando o Ollama está disponível, o Qwen lista as partes encontradas no texto,
+incluindo nome e papel processual, em vez de escolher somente a primeira parte.
+O organizador compara todos esses nomes com o nome do arquivo e escolhe a
+correspondência mais forte, inclusive tolerando pequenos erros de digitação.
+Isso permite escolher `ELTECH` a partir de `Sentenca Eltch.pdf` mesmo quando
+`HEVELLY` aparece como autora e `ELTECH` como réu. As regras locais permanecem
+como fallback caso o Ollama não esteja disponível ou não retorne partes válidas.
 
 Para evitar o timeout observado no modo de raciocínio padrão do `qwen3:4b`, as
 gerações Qwen usam `think=false`, temperatura `0` e no máximo `256` tokens. O
 A identificação do cliente usa no máximo 128 tokens; as demais gerações usam
-256. O timeout de geração padrão é de 120 segundos, enquanto a verificação do serviço
+256. O timeout de geração padrão é de 300 segundos (5 minutos), enquanto a verificação do serviço
 usa um timeout separado de 15 segundos. Esses valores podem ser alterados no
 `.env` por `CETTI_OLLAMA_TIMEOUT` e `CETTI_OLLAMA_STATUS_TIMEOUT`.
 

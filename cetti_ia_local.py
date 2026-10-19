@@ -52,7 +52,7 @@ class OllamaConfig:
     base_url: str = "http://127.0.0.1:11434"
     text_model: str = "qwen3:4b"
     ocr_model: str = "glm-ocr"
-    timeout: float = 60.0
+    timeout: float = 300.0
     availability_timeout: float = 15.0
 
     @classmethod
@@ -168,7 +168,7 @@ class OllamaClient:
         filename: str,
         client_folders: list[str],
         excluded_names: list[str] | None = None,
-    ) -> str | None:
+    ) -> list[dict[str, str]]:
         document_excerpt = text[:_IDENTIFICATION_TEXT_LIMIT]
         excerpt_note = (
             f"(trecho inicial limitado a {_IDENTIFICATION_TEXT_LIMIT} caracteres; "
@@ -177,16 +177,14 @@ class OllamaClient:
         folders = "\n".join(f"- {folder}" for folder in client_folders) or "(nenhuma pasta criada)"
         excluded = "\n".join(f"- {name}" for name in (excluded_names or [])) or "(nenhum nome cadastrado)"
         prompt = (
-            "Identifique o cliente deste documento juridico. Use o nome do arquivo "
-            "como evidencia principal: ele pode conter o nome completo ou apenas "
-            "parte do nome do cliente, mesmo quando o texto tiver autor, reu e "
-            "outras pessoas. Compare com as pastas existentes quando houver "
-            "correspondencia. Se nao houver pasta correspondente, extraia o nome "
-            "completo do cliente a partir do documento e do nome do arquivo. "
-            "Nao escolha advogado, juiz, empresa ou a outra parte. Retorne somente "
-            'JSON valido no formato {"client_name": "...", "reason": "..."}; use '
-            "client_name null quando nao houver evidencia suficiente. Nao invente "
-            "um nome e nao retorne um nome que nao esteja no texto ou no arquivo. "
+            "Liste todas as partes identificadas neste documento juridico, com nome "
+            "completo e papel processual. Nao escolha somente a parte autora: inclua "
+            "autora, reu, empresas e demais partes encontradas. Retorne somente JSON "
+            'valido no formato {"parties": [{"name": "...", "role": "..."}], '
+            '"reason": "..."}; use uma lista vazia quando nao houver evidencia. '
+            "Nao invente nomes e nao inclua advogado, juiz ou testemunha como parte. "
+            "O sistema escolhera a parte correta comparando os nomes retornados com "
+            "o nome do arquivo, que pode conter erro de digitacao. "
             "Os nomes abaixo sao advogados do escritorio e NUNCA podem ser clientes: "
             f"{excluded}. Escreva reason em no maximo 12 palavras.\n\n"
             f"NOME DO ARQUIVO:\n{filename}\n\n"
@@ -200,12 +198,28 @@ class OllamaClient:
             num_predict=128,
         )
         value = _parse_json_response(raw)
-        if set(value) != {"client_name", "reason"}:
-            raise LocalAIError("A resposta de identificacao do cliente possui esquema invalido.")
-        client_name = value["client_name"]
-        if client_name is not None and not isinstance(client_name, str):
-            raise LocalAIError("client_name deve ser texto ou null.")
-        return client_name.strip() if isinstance(client_name, str) and client_name.strip() else None
+        if set(value) == {"client_name", "reason"}:
+            client_name = value["client_name"]
+            if client_name is not None and not isinstance(client_name, str):
+                raise LocalAIError("client_name deve ser texto ou null.")
+            return [{"name": client_name.strip(), "role": "parte"}] if client_name and client_name.strip() else []
+        if set(value) != {"parties", "reason"}:
+            raise LocalAIError("A resposta de identificacao das partes possui esquema invalido.")
+        parties = value["parties"]
+        if not isinstance(parties, list):
+            raise LocalAIError("parties deve ser uma lista.")
+        validated: list[dict[str, str]] = []
+        for party in parties:
+            if not isinstance(party, dict) or set(party) != {"name", "role"}:
+                raise LocalAIError("Cada parte deve possuir nome e papel.")
+            name = party["name"]
+            role = party["role"]
+            if not isinstance(name, str) or not name.strip():
+                raise LocalAIError("O nome da parte deve ser texto não vazio.")
+            if not isinstance(role, str) or not role.strip():
+                raise LocalAIError("O papel da parte deve ser texto não vazio.")
+            validated.append({"name": name.strip(), "role": role.strip()})
+        return validated
 
     def ocr_image(self, image: bytes) -> str:
         return self.generate(

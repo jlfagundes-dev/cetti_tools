@@ -277,14 +277,107 @@ def _folder_for_client_name(
     return new_folder
 
 
+def _name_from_document_matching_filename(
+    path: Path,
+    extracted: ExtractionResult,
+    excluded_names: list[str],
+) -> str | None:
+    filename_tokens = _tokens(path.stem)
+    if not filename_tokens:
+        return None
+
+    candidates: list[tuple[int, int, str]] = []
+    names = _extract_client_names(extracted.text) + _extract_role_names(extracted.text)
+    for name in dict.fromkeys(names):
+        if not _looks_like_person_name(name) or _is_excluded_name(name, excluded_names):
+            continue
+        name_tokens = _tokens(name)
+        scores = [
+            max(
+                (
+                    _filename_token_match_score(name_token, filename_token)
+                    for filename_token in filename_tokens
+                ),
+                default=0,
+            )
+            for name_token in name_tokens
+        ]
+        matched_scores = [score for score in scores if score]
+        if not matched_scores:
+            continue
+        candidates.append((sum(matched_scores), len(matched_scores), name))
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (-item[0], -item[1], item[2].casefold()))
+    if len(candidates) > 1 and candidates[0][:2] == candidates[1][:2]:
+        return None
+    return candidates[0][2]
+
+
+def _name_from_candidates_matching_filename(
+    path: Path,
+    names: list[str],
+    excluded_names: list[str],
+) -> str | None:
+    filename_tokens = _tokens(path.stem)
+    candidates: list[tuple[int, int, str]] = []
+    for name in dict.fromkeys(names):
+        if not _looks_like_person_name(name) or _is_excluded_name(name, excluded_names):
+            continue
+        name_tokens = _tokens(name)
+        scores = [
+            max(
+                (
+                    _filename_token_match_score(name_token, filename_token)
+                    for filename_token in filename_tokens
+                ),
+                default=0,
+            )
+            for name_token in name_tokens
+        ]
+        matched_scores = [score for score in scores if score]
+        if matched_scores:
+            candidates.append((sum(matched_scores), len(matched_scores), name))
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (-item[0], -item[1], item[2].casefold()))
+    if len(candidates) > 1 and candidates[0][:2] == candidates[1][:2]:
+        return None
+    return candidates[0][2]
+
+
 def _identify_client(
     path: Path,
     extracted: ExtractionResult,
     clients: list[Path],
     ai_name: str | None = None,
+    ai_names: list[str] | None = None,
     excluded_names: list[str] | None = None,
 ) -> Path | None:
     excluded_names = excluded_names or []
+    ai_filename_name = _name_from_candidates_matching_filename(
+        path,
+        ai_names or [],
+        excluded_names,
+    )
+    if ai_filename_name is not None:
+        ai_client = _folder_for_client_name(path, clients, ai_filename_name, excluded_names)
+        if ai_client is not None:
+            return ai_client
+
+    document_name = _name_from_document_matching_filename(path, extracted, excluded_names)
+    if document_name is not None:
+        document_client = _folder_for_client_name(
+            path,
+            clients,
+            document_name,
+            excluded_names,
+        )
+        if document_client is not None:
+            return document_client
+
     if ai_name:
         ai_client = _folder_for_client_name(path, clients, ai_name, excluded_names)
         if ai_client is not None:
@@ -362,15 +455,16 @@ def _ai_client_name(
     filename: str,
     clients: list[Path],
     excluded_names: list[str],
-) -> str | None:
+) -> list[str]:
     if ollama_client is None or not text.strip():
-        return None
-    return ollama_client.identify_client_name(
+        return []
+    parties = ollama_client.identify_client_name(
         text,
         filename,
         [client.name for client in clients],
         excluded_names,
     )
+    return [party["name"] for party in parties]
 
 
 def _stable(path: Path) -> bool:
@@ -495,27 +589,30 @@ def organize_documents(
                     summary.diagnostics.append(diagnostic)
                     append_log(log_database, run_id, diagnostic)
                 report(f"Métodos usados em {path.name}: {methods}")
-                ai_name = None
+                ai_names: list[str] = []
                 if ollama_client is not None:
                     try:
-                        ai_name = _ai_client_name(
+                        ai_names = _ai_client_name(
                             ollama_client,
                             extracted.text,
                             path.name,
                             clients,
                             excluded_names,
                         )
-                        ai_name_blocked = bool(
-                            ai_name and _is_excluded_name(ai_name, excluded_names)
-                        )
-                        if ai_name_blocked:
-                            ai_name = None
+                        blocked_names = [
+                            name for name in ai_names
+                            if _is_excluded_name(name, excluded_names)
+                        ]
+                        ai_names = [
+                            name for name in ai_names
+                            if not _is_excluded_name(name, excluded_names)
+                        ]
                         diagnostic = (
                             f"{path.name}: Qwen/modelo={ollama_client.config.text_model}; "
-                            f"nome retornado={ai_name or '(nenhum)'}"
+                            f"partes retornadas={', '.join(ai_names) or '(nenhuma)'}"
                             + (
-                                "; resposta rejeitada: nome corresponde ao advogado"
-                                if ai_name_blocked
+                                "; partes de advogado rejeitadas: " + ", ".join(blocked_names)
+                                if blocked_names
                                 else ""
                             )
                         )
@@ -534,7 +631,13 @@ def organize_documents(
                     )
                     summary.diagnostics.append(diagnostic)
                     append_log(log_database, run_id, diagnostic)
-                client = _identify_client(path, extracted, clients, ai_name, excluded_names)
+                client = _identify_client(
+                    path,
+                    extracted,
+                    clients,
+                    ai_names=ai_names,
+                    excluded_names=excluded_names,
+                )
                 extracted_names = _extract_client_names(extracted.text) + _extract_role_names(extracted.text)
                 if extracted_names:
                     report(f"Nome extraído do documento: {extracted_names[0]}")

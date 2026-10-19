@@ -134,6 +134,30 @@ class Etapa6Tests(unittest.TestCase):
 
         self.assertEqual(request.call_args.args[2]["options"]["num_predict"], 128)
 
+    def test_identificacao_retorna_todas_as_partes_com_papel(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        with patch.object(
+            client,
+            "_request",
+            return_value={
+                "response": (
+                    '{"parties": ['
+                    '{"name": "Hevelly dos Santos Ruas", "role": "autora"},'
+                    '{"name": "Eltech Montagem Eletrica LTDA", "role": "reu"}'
+                    '], "reason": "partes encontradas"}'
+                )
+            },
+        ):
+            parties = client.identify_client_name("Texto", "Sentenca Eltch.pdf", [])
+
+        self.assertEqual(
+            parties,
+            [
+                {"name": "Hevelly dos Santos Ruas", "role": "autora"},
+                {"name": "Eltech Montagem Eletrica LTDA", "role": "reu"},
+            ],
+        )
+
     def test_prompt_informa_advogado_que_nao_pode_ser_cliente(self) -> None:
         client = OllamaClient(OllamaConfig())
         with patch.object(
@@ -215,6 +239,37 @@ class Etapa6Tests(unittest.TestCase):
                 extracted,
                 [existing_client],
                 ai_name="ELTECH MONTAGEM ELETRICA LTDA",
+            )
+
+            self.assertEqual(
+                result,
+                base / "01_CLIENTES" / "ELTECH MONTAGEM ELETRICA LTDA",
+            )
+            self.assertTrue(result.is_dir())
+
+    def test_nome_da_parte_re_concorrige_ia_que_escolheu_a_parte_autora(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            path = base / "Sentenca Eltch.pdf"
+            extracted = ExtractionResult(
+                path,
+                (
+                    PageText(
+                        1,
+                        (
+                            "AUTORA: HEVELLY DOS SANTOS RUAS\n"
+                            "REU: ELTECH MONTAGEM ELETRICA LTDA"
+                        ),
+                        "native",
+                    ),
+                ),
+            )
+
+            result = _identify_client(
+                path,
+                extracted,
+                [],
+                ai_name="HEVELLY DOS SANTOS RUAS",
             )
 
             self.assertEqual(
