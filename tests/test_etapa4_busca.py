@@ -59,6 +59,47 @@ class Etapa4Tests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 require_inside_root(root / ".." / "fora.pdf", root)
 
+    def test_busca_encontra_termo_no_conteudo_do_pdf(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            root = base / "Documentos"
+            database = base / "estado" / "cetti.sqlite3"
+            pdf = root / "CTPS Erasmo.pdf"
+            pdf.parent.mkdir(parents=True)
+            pymupdf = __import__("pymupdf")
+            document = pymupdf.open()
+            page = document.new_page()
+            page.insert_text((72, 72), "Carteira de Trabalho e Previdencia Social de Erasmo")
+            document.save(pdf)
+            document.close()
+
+            summary = index_documents(root, database)
+            self.assertEqual(summary.text_indexed, 1)
+            results = search_documents("carteira de trabalho do Erasmo", root, database)
+
+            self.assertEqual([result.file_name for result in results], ["CTPS Erasmo.pdf"])
+            self.assertEqual(results[0].matched_page, 1)
+            self.assertIn("Carteira de Trabalho", results[0].snippet or "")
+            self.assertEqual(results[0].match_source, "conteudo")
+
+    def test_pdf_invalido_nao_interrompe_indexacao(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            root = base / "Documentos"
+            database = base / "estado" / "cetti.sqlite3"
+            pdf = root / "invalido.pdf"
+            pdf.parent.mkdir(parents=True)
+            pdf.write_bytes(b"nao e um pdf")
+
+            summary = index_documents(root, database)
+
+            self.assertEqual(summary.extraction_errors, 1)
+            with CettiDatabase(database) as db:
+                status = db.conn.execute(
+                    "SELECT extraction_status FROM document_text"
+                ).fetchone()[0]
+            self.assertEqual(status, "error")
+
 
 if __name__ == "__main__":
     unittest.main()

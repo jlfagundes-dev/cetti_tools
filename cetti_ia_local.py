@@ -23,6 +23,7 @@ load_project_environment()
 
 _OLLAMA_LOCK = threading.Lock()
 _IDENTIFICATION_TEXT_LIMIT = 8_000
+_SEARCH_QUERY_LIMIT = 1_000
 
 
 class LocalAIError(RuntimeError):
@@ -45,6 +46,12 @@ class DocumentInterpretation:
     document_type: EvidenceValue
     process_number: EvidenceValue
     document_date: EvidenceValue
+
+
+@dataclass(frozen=True)
+class SearchInterpretation:
+    terms: tuple[str, ...]
+    explanation: str
 
 
 @dataclass(frozen=True)
@@ -161,6 +168,45 @@ class OllamaClient:
         )
         raw = self.generate(prompt, self.config.text_model, json_response=True)
         return validate_interpretation(raw, page_count)
+
+    def interpret_search_query(self, query: str) -> SearchInterpretation:
+        clean_query = query.strip()
+        if not clean_query:
+            raise ValueError("A consulta de pesquisa nao pode ser vazia.")
+        if len(clean_query) > _SEARCH_QUERY_LIMIT:
+            raise ValueError("A consulta de pesquisa excede o limite permitido.")
+        prompt = (
+            "Interprete uma consulta para localizar documentos em um indice local. "
+            "Retorne somente JSON valido no formato "
+            '{"terms": ["termo1", "termo2"], "explanation": "..."}. '
+            "Inclua palavras relevantes da consulta e sinonimos muito provaveis "
+            "(por exemplo, carteira de trabalho pode incluir CTPS). "
+            "Nao inclua palavras genericas como documento, arquivo, encontrar, "
+            "mostrar ou processo. Nao invente nomes, numeros ou tipos. Use no "
+            "maximo 12 termos curtos e escreva uma explicacao de no maximo 20 "
+            f"palavras.\n\nCONSULTA:\n{clean_query}"
+        )
+        raw = self.generate(
+            prompt,
+            self.config.text_model,
+            json_response=True,
+            num_predict=192,
+        )
+        value = _parse_json_response(raw)
+        if set(value) != {"terms", "explanation"}:
+            raise LocalAIError("A resposta de interpretacao da busca possui esquema invalido.")
+        terms = value["terms"]
+        explanation = value["explanation"]
+        if not isinstance(terms, list) or not all(
+            isinstance(term, str) and term.strip() for term in terms
+        ):
+            raise LocalAIError("terms deve ser uma lista de textos nao vazios.")
+        if not isinstance(explanation, str):
+            raise LocalAIError("explanation deve ser texto.")
+        clean_terms = tuple(dict.fromkeys(term.strip()[:80] for term in terms[:12]))
+        if not clean_terms:
+            raise LocalAIError("A interpretacao nao retornou termos de pesquisa.")
+        return SearchInterpretation(clean_terms, explanation.strip()[:300])
 
     def identify_client_name(
         self,

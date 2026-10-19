@@ -13,7 +13,7 @@ from cetti_config import load_project_environment
 
 load_project_environment()
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 def utc_now() -> str:
@@ -107,6 +107,29 @@ class CettiDatabase:
                 details TEXT,
                 created_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS document_text (
+                document_id INTEGER PRIMARY KEY REFERENCES documents(id) ON DELETE CASCADE,
+                full_text TEXT NOT NULL DEFAULT '',
+                extraction_method TEXT,
+                extraction_status TEXT NOT NULL,
+                extracted_at TEXT NOT NULL,
+                error_message TEXT
+            );
+            CREATE TABLE IF NOT EXISTS document_pages (
+                document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+                page_number INTEGER NOT NULL,
+                text TEXT NOT NULL DEFAULT '',
+                extraction_method TEXT,
+                confidence REAL,
+                review_required INTEGER NOT NULL DEFAULT 0,
+                review_reason TEXT,
+                PRIMARY KEY(document_id, page_number)
+            );
+            CREATE VIRTUAL TABLE IF NOT EXISTS document_search USING fts5(
+                document_id UNINDEXED,
+                page_number UNINDEXED,
+                text
+            );
             CREATE INDEX IF NOT EXISTS idx_clients_normalized_name
                 ON clients(normalized_name);
             CREATE INDEX IF NOT EXISTS idx_documents_client_id
@@ -131,6 +154,11 @@ class CettiDatabase:
             )
         elif int(row["value"]) > SCHEMA_VERSION:
             raise RuntimeError("O banco foi criado por uma versão mais nova do Arquivista.")
+        elif int(row["value"]) < SCHEMA_VERSION:
+            self.conn.execute(
+                "UPDATE schema_meta SET value = ? WHERE key = ?",
+                (str(SCHEMA_VERSION), "schema_version"),
+            )
         self.conn.commit()
 
     def record_operation(
@@ -142,6 +170,86 @@ class CettiDatabase:
         self.conn.execute(
             "INSERT INTO operations(operation, relative_path, details, created_at) VALUES(?, ?, ?, ?)",
             (operation, relative_path, json.dumps(details or {}, ensure_ascii=False), utc_now()),
+        )
+
+    def replace_document_text(
+        self,
+        document_id: int,
+        full_text: str,
+        pages: Iterable[dict[str, Any]],
+        extraction_method: str | None,
+        extraction_status: str,
+        error_message: str | None = None,
+    ) -> None:
+        self.conn.execute(
+            "DELETE FROM document_search WHERE document_id = ?",
+            (str(document_id),),
+        )
+        self.conn.execute(
+            "DELETE FROM document_pages WHERE document_id = ?",
+            (document_id,),
+        )
+        self.conn.execute(
+            """
+            INSERT INTO document_text(
+                document_id, full_text, extraction_method, extraction_status,
+                extracted_at, error_message
+            ) VALUES(?, ?, ?, ?, ?, ?)
+            ON CONFLICT(document_id) DO UPDATE SET
+                full_text = excluded.full_text,
+                extraction_method = excluded.extraction_method,
+                extraction_status = excluded.extraction_status,
+                extracted_at = excluded.extracted_at,
+                error_message = excluded.error_message
+            """,
+            (
+                document_id,
+                full_text,
+                extraction_method,
+                extraction_status,
+                utc_now(),
+                error_message,
+            ),
+        )
+        for page in pages:
+            page_number = int(page["page_number"])
+            text = str(page.get("text") or "")
+            self.conn.execute(
+                """
+                INSERT INTO document_pages(
+                    document_id, page_number, text, extraction_method,
+                    confidence, review_required, review_reason
+                ) VALUES(?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    document_id,
+                    page_number,
+                    text,
+                    page.get("extraction_method"),
+                    page.get("confidence"),
+                    int(bool(page.get("review_required"))),
+                    page.get("review_reason"),
+                ),
+            )
+            if text:
+                self.conn.execute(
+                    "INSERT INTO document_search(document_id, page_number, text) VALUES(?, ?, ?)",
+                    (str(document_id), page_number, text),
+                )
+
+    def search_document_text(self, match: str, limit: int = 100) -> list[sqlite3.Row]:
+        return list(
+            self.conn.execute(
+                """
+                SELECT document_id, page_number, text,
+                       bm25(document_search) AS rank
+                FROM document_search
+                WHERE document_search MATCH ?
+                ORDER BY rank
+                LIMIT ?
+                """,
+                (match, limit),
+            )
         )
 
     def get_or_create_client(self, name: str) -> int:

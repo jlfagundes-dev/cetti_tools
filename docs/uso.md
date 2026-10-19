@@ -8,7 +8,20 @@ Configure `CETTI_ROOT` e, opcionalmente, `CETTI_DB_PATH`. Depois execute:
 python cetti_indexador.py
 ```
 
-A operação percorre a raiz somente para leitura e imprime um resumo com arquivos novos, modificados, renomeados, removidos e ignorados.
+A operação percorre a raiz somente para leitura e imprime um resumo com arquivos novos, modificados, renomeados, removidos, ignorados, PDFs com texto indexado e erros de extração.
+
+Para indexar PDFs digitalizados com OCR:
+
+```python
+from cetti_indexador import index_documents
+
+resumo = index_documents(
+    root=r'C:\Dados\Cetti\Documentos',
+    database=r'C:\Dados\Cetti\Estado\cetti.sqlite3',
+    use_ocr=True,
+)
+print(resumo.as_dict())
+```
 
 ## Organização pela interface
 
@@ -88,7 +101,12 @@ for resultado in resultados:
     print(resultado.path)
 ```
 
-A interpretação não depende de IA. Consultas ambíguas retornam todos os candidatos para escolha da interface.
+A pesquisa consulta metadados e o conteúdo textual indexado por página. Por exemplo,
+`carteira de trabalho do Erasmo` pode encontrar `CTPS Erasmo.pdf` pelo conteúdo,
+mesmo sem uma correspondência literal completa no nome do arquivo. A interface pode
+usar o Ollama local para expandir a consulta; a busca continua funcionando sem ele.
+Cada resultado informa a página, o trecho e se a correspondência veio de metadados
+ou conteúdo.
 
 ## Explorer
 
@@ -103,6 +121,13 @@ open_document(resultado.path, root)
 ```
 
 Cada ação rejeita caminhos fora da raiz autorizada.
+
+Na tela de resultados, **Copiar endereço** copia o caminho local completo do
+arquivo selecionado. Esse endereço pode ser colado em um assinador ou enviado
+ao cliente somente quando o computador do cliente tiver acesso à mesma pasta,
+por exemplo por uma pasta compartilhada ou sincronizada. Um caminho local do
+seu computador não transfere o arquivo nem funciona automaticamente em outro
+computador.
 
 ## Movimentação
 

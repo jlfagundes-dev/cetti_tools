@@ -134,6 +134,23 @@ class Etapa6Tests(unittest.TestCase):
 
         self.assertEqual(request.call_args.args[2]["options"]["num_predict"], 128)
 
+    def test_interpretacao_de_busca_valida_termos_e_limita_quantidade(self) -> None:
+        client = OllamaClient(OllamaConfig())
+        terms = [f"termo-{number}" for number in range(20)]
+        response = json.dumps({"terms": terms, "explanation": "busca por documento"})
+        with patch.object(
+            client,
+            "_request",
+            return_value={"response": response},
+        ):
+            interpretation = client.interpret_search_query(
+                "carteira de trabalho do Erasmo"
+            )
+
+        self.assertEqual(len(interpretation.terms), 12)
+        self.assertEqual(interpretation.terms[0], "termo-0")
+        self.assertEqual(interpretation.explanation, "busca por documento")
+
     def test_identificacao_retorna_todas_as_partes_com_papel(self) -> None:
         client = OllamaClient(OllamaConfig())
         with patch.object(

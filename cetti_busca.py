@@ -61,6 +61,9 @@ class SearchResult:
     process_number: str | None
     document_date: str | None
     score: int
+    matched_page: int | None = None
+    snippet: str | None = None
+    match_source: str = "metadata"
 
 
 def _without_accents(value: str) -> str:
@@ -130,6 +133,27 @@ def search_documents(
             """,
             ("active",),
         ).fetchall()
+        content_matches: dict[int, tuple[set[str], int, str]] = {}
+        if criteria.terms:
+            for term in criteria.terms:
+                safe_term = re.sub(r'["*]', " ", term).strip()
+                if safe_term:
+                    for match in db.search_document_text(f'"{safe_term}"*'):
+                        document_id = int(match["document_id"])
+                        matched_terms, page, snippet = content_matches.get(
+                            document_id, (set(), int(match["page_number"]), str(match["text"]))
+                        )
+                        content_matches[document_id] = (
+                            matched_terms | {term},
+                            page,
+                            snippet,
+                        )
+        content_threshold = max(1, (len(criteria.terms) + 1) // 2)
+        active_names = {
+            normalize_name(row["file_name"])
+            for row in rows
+            if "_duplicado" not in normalize_name(row["file_name"])
+        }
         for row in rows:
             searchable = normalize_name(
                 " ".join(
@@ -153,15 +177,40 @@ def search_documents(
                 continue
             if not _date_matches(row["document_date"], criteria.month, criteria.year):
                 continue
-            if criteria.terms and not all(term in searchable for term in criteria.terms):
+            metadata_match = all(term in searchable for term in criteria.terms)
+            content_data = content_matches.get(int(row["id"]))
+            content_match = content_data is not None and len(content_data[0]) >= content_threshold
+            if criteria.terms and not metadata_match and not content_match:
                 continue
             score = sum(term in searchable for term in criteria.terms) * 10
+            if content_match:
+                score += len(content_data[0]) * 25
+            filename_terms = sum(
+                term in normalize_name(row["file_name"]) for term in criteria.terms
+            )
+            score += filename_terms * 40
+            if row["relative_path"].casefold().startswith("01_clientes\\") or row[
+                "relative_path"
+            ].casefold().startswith("01_clientes/"):
+                score += 20
+            normalized_filename = normalize_name(row["file_name"])
+            if "_duplicado" in normalized_filename:
+                original_name = normalized_filename.replace("_duplicado", "")
+                if original_name in active_names:
+                    continue
+                score -= 80
             if criteria.process_number:
                 score += 30
             if criteria.document_type:
                 score += 20
             if criteria.month or criteria.year:
                 score += 15
+            _, matched_page, snippet = content_data or (set(), None, None)
+            sources = []
+            if metadata_match and criteria.terms:
+                sources.append("metadados")
+            if content_match:
+                sources.append("conteudo")
             results.append(
                 SearchResult(
                     document_id=int(row["id"]),
@@ -172,6 +221,9 @@ def search_documents(
                     process_number=row["process_number"],
                     document_date=row["document_date"],
                     score=score,
+                    matched_page=matched_page,
+                    snippet=snippet,
+                    match_source=" + ".join(sources) or "filtro",
                 )
             )
     return sorted(results, key=lambda result: (-result.score, str(result.path).casefold()))

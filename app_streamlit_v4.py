@@ -1,11 +1,20 @@
 from __future__ import annotations
 
 import os
+import json
+from dataclasses import replace
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 
-from cetti_busca import open_containing_folder, open_document, search_documents, select_in_explorer
+from cetti_busca import (
+    open_containing_folder,
+    open_document,
+    parse_query,
+    search_documents,
+    select_in_explorer,
+)
 from cetti_db import CettiDatabase
 from cetti_extracao import extract_pdf
 from cetti_logging import log_path, read_log
@@ -78,19 +87,68 @@ with tab_busca:
         placeholder="Ex.: petição do José, contrato, processo 1234567",
         key="consulta_documentos",
     )
-    if st.button("Pesquisar", type="primary", key="botao_pesquisar"):
+    usar_ia_busca = st.checkbox(
+        "Interpretar a consulta com IA local (Ollama)",
+        value=True,
+        help="A IA apenas expande os termos; os resultados continuam sendo validados pelo índice local.",
+    )
+    ocr_indexacao = st.checkbox(
+        "Usar OCR ao atualizar o índice",
+        value=False,
+        help="Ative para PDFs digitalizados. Pode tornar a atualização mais demorada.",
+    )
+    col_busca, col_indice = st.columns(2)
+    with col_busca:
+        pesquisar = st.button("Pesquisar", type="primary", key="botao_pesquisar")
+    with col_indice:
+        atualizar_indice = st.button("Atualizar índice textual", key="atualizar_indice_textual")
+    if atualizar_indice:
+        try:
+            with st.spinner("Atualizando índice de documentos e conteúdo..."):
+                resumo_indice = index_documents(
+                    config.root, config.database, use_ocr=ocr_indexacao
+                )
+            st.success(
+                f"Índice atualizado: {resumo_indice.text_indexed} PDF(s) com texto, "
+                f"{resumo_indice.extraction_errors} erro(s) de extração."
+            )
+            st.json(resumo_indice.as_dict())
+        except Exception as erro:
+            st.error(f"Falha na atualização do índice: {erro}")
+    if pesquisar:
         if not consulta.strip():
             st.warning("Digite o nome do cliente ou informações do documento.")
         else:
             try:
+                criteria = parse_query(consulta.strip())
+                if usar_ia_busca:
+                    from cetti_ia_local import OllamaClient
+
+                    cliente_ollama = OllamaClient()
+                    if cliente_ollama.is_available():
+                        interpretacao = cliente_ollama.interpret_search_query(consulta.strip())
+                        ai_criteria = parse_query(" ".join(interpretacao.terms))
+                        criteria = replace(
+                            criteria,
+                            terms=tuple(dict.fromkeys(criteria.terms + ai_criteria.terms)),
+                        )
+                        st.session_state["cetti_interpretacao_ia"] = interpretacao.explanation
+                    else:
+                        st.session_state["cetti_interpretacao_ia"] = (
+                            "Ollama indisponível; foi usada a busca determinística."
+                        )
                 st.session_state["cetti_resultados"] = search_documents(
-                    consulta.strip(), config.root, config.database
+                    criteria, config.root, config.database
                 )
                 st.session_state["cetti_consulta"] = consulta.strip()
             except Exception as erro:
                 st.error(f"Falha na pesquisa: {erro}")
 
     resultados = st.session_state.get("cetti_resultados", [])
+    if len(resultados) > 1 and resultados[0].score - resultados[1].score >= 20:
+        resultados = resultados[:1]
+    if st.session_state.get("cetti_interpretacao_ia"):
+        st.caption(f"Interpretação: {st.session_state['cetti_interpretacao_ia']}")
     if resultados:
         st.success(f"{len(resultados)} resultado(s) para: {st.session_state.get('cetti_consulta', '')}")
         opcoes = {
@@ -100,7 +158,7 @@ with tab_busca:
         rotulo_selecionado = st.selectbox("Selecione um documento", list(opcoes.keys()))
         selecionado = opcoes[rotulo_selecionado]
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
             if st.button("Abrir arquivo", key="abrir_arquivo"):
                 try:
@@ -122,12 +180,45 @@ with tab_busca:
                     st.success("Solicitação enviada ao sistema operacional.")
                 except Exception as erro:
                     st.error(f"Não foi possível localizar o arquivo: {erro}")
+        with col4:
+            endereco_arquivo = Path(selecionado.path)
+            if (
+                endereco_arquivo.is_dir()
+                or endereco_arquivo.name.casefold() != selecionado.file_name.casefold()
+            ):
+                endereco_arquivo = endereco_arquivo / selecionado.file_name
+            endereco_arquivo = endereco_arquivo.resolve()
+            caminho_json = json.dumps(str(endereco_arquivo), ensure_ascii=False)
+            components.html(
+                f"""
+                <button
+                    style="width:100%; height:42px; border:1px solid #555;
+                           border-radius:6px; background:#20242c; color:#fff;
+                           cursor:pointer; font-size:14px;"
+                    onclick='navigator.clipboard.writeText({caminho_json})
+                        .then(() => this.innerText = "Copiado")
+                        .catch(() => this.innerText = "Falha ao copiar");'
+                >Copiar endereço</button>
+                """,
+                height=50,
+            )
+        st.code(str(endereco_arquivo))
+        st.caption(
+            "O endereço copiado é local e só funcionará no computador do cliente "
+            "se essa pasta estiver compartilhada ou sincronizada para ele."
+        )
 
         st.write("**Detalhes do documento selecionado**")
         st.write(f"- Cliente: {selecionado.client_name or 'Não identificado'}")
         st.write(f"- Tipo: {selecionado.document_type or 'Não identificado'}")
         st.write(f"- Número do processo: {selecionado.process_number or 'Não identificado'}")
         st.write(f"- Data do documento: {selecionado.document_date or 'Não identificada'}")
+        st.write(f"- Correspondência: {selecionado.match_source}")
+        if selecionado.matched_page is not None:
+            st.write(f"- Página encontrada: {selecionado.matched_page}")
+        if selecionado.snippet:
+            st.write("**Trecho indexado:**")
+            st.code(selecionado.snippet[:1200])
         st.code(str(selecionado.path))
     elif "cetti_resultados" in st.session_state:
         st.info("Nenhum resultado encontrado. Se os documentos ainda não foram indexados, use a aba 'Atualizar índice'.")

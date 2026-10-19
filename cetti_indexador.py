@@ -8,6 +8,7 @@ from typing import Iterator
 
 from cetti_config import load_project_environment
 from cetti_db import CettiDatabase
+from cetti_extracao import ExtractionError, extract_pdf
 
 load_project_environment()
 
@@ -39,6 +40,8 @@ class IndexSummary:
     renamed: int = 0
     removed: int = 0
     ignored: int = 0
+    text_indexed: int = 0
+    extraction_errors: int = 0
 
     def as_dict(self) -> dict[str, int]:
         return {
@@ -49,6 +52,8 @@ class IndexSummary:
             "renamed": self.renamed,
             "removed": self.removed,
             "ignored": self.ignored,
+            "text_indexed": self.text_indexed,
+            "extraction_errors": self.extraction_errors,
         }
 
 
@@ -151,6 +156,7 @@ def document_data(root: Path, path: Path, digest: str) -> dict[str, object]:
 def index_documents(
     root: Path | str | None = None,
     database: Path | str | None = None,
+    use_ocr: bool = False,
 ) -> IndexSummary:
     config = resolve_config(root, database)
     summary = IndexSummary()
@@ -167,6 +173,22 @@ def index_documents(
                     and existing["size_bytes"] == stat.st_size
                     and existing["modified_ns"] == stat.st_mtime_ns
                 ):
+                    text_index = db.conn.execute(
+                        "SELECT extraction_status FROM document_text WHERE document_id = ?",
+                        (int(existing["id"]),),
+                    ).fetchone()
+                    if (
+                        path.suffix.casefold() == ".pdf"
+                        and (
+                            text_index is None
+                            or text_index["extraction_status"] == "error"
+                        )
+                    ):
+                        document_id = int(existing["id"])
+                        if _index_pdf_text(
+                            db, document_id, path, summary, use_ocr=use_ocr
+                        ):
+                            summary.text_indexed += 1
                     seen_paths.add(relative_path)
                     summary.scanned += 1
                     summary.unchanged += 1
@@ -186,6 +208,12 @@ def index_documents(
                     action = db.upsert_document(data)
                     summary.new += action == "new"
                     summary.modified += action in {"modified", "restored"}
+                indexed = db.find_by_path(data["relative_path"])
+                if indexed is not None and path.suffix.casefold() == ".pdf":
+                    if _index_pdf_text(
+                        db, int(indexed["id"]), path, summary, use_ocr=use_ocr
+                    ):
+                        summary.text_indexed += 1
                 seen_paths.add(relative_path)
                 summary.scanned += 1
             except (FileNotFoundError, PermissionError, OSError):
@@ -196,6 +224,49 @@ def index_documents(
         db.record_operation("index", details=summary.as_dict())
         db.commit()
     return summary
+
+
+def _index_pdf_text(
+    db: CettiDatabase,
+    document_id: int,
+    path: Path,
+    summary: IndexSummary,
+    *,
+    use_ocr: bool,
+) -> bool:
+    try:
+        result = extract_pdf(path, use_ocr=use_ocr)
+    except (ExtractionError, OSError, ValueError) as error:
+        db.replace_document_text(
+            document_id,
+            "",
+            [],
+            extraction_method=None,
+            extraction_status="error",
+            error_message=str(error),
+        )
+        summary.extraction_errors += 1
+        return False
+
+    pages = [
+        {
+            "page_number": page.page,
+            "text": page.text,
+            "extraction_method": page.method,
+            "confidence": page.confidence,
+            "review_required": page.review_required,
+            "review_reason": page.review_reason,
+        }
+        for page in result.pages
+    ]
+    db.replace_document_text(
+        document_id,
+        result.text,
+        pages,
+        extraction_method=",".join(result.methods) or None,
+        extraction_status="indexed" if result.has_text else "empty",
+    )
+    return True
 
 
 if __name__ == "__main__":
